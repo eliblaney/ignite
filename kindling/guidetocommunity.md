@@ -1,0 +1,18 @@
+# Guide to Community
+
+Ignite is not easy. No truly Christian life is. At some point in this retreat you will find your resolve wavering, your flame flickering. If one’s flame burns out, it cannot be relit except by another flame, which is why you are surrounded by a community of flames to reignite you. Your group of spiritual brothers and sisters are committed to sustaining you and sharing their light with you. As a community, you will support each other by:
+
+1. Meeting once a week in person at a time and place that works for every group member to share the graces and difficulties of your Ignite retreat.
+2. Being available for help, companionship, and socialization when needed. It is recommended to establish a group chat to facilitate communication.
+3. Praying for each other.
+
+Your group coordinator will help facilitate your weekly meetings but is otherwise the same as any other retreatant. Unlike most retreats, Ignite has no official director, instead, the reflections you read each week will direct your prayer.
+
+However, an app can’t replicate the personal connection and support of a real person. To meet this need, you will form a pair with someone in your group to be _spiritual companions._ Inspired by Ignatius’s companions in the society of Jesus, companions support each other by:
+
+1. Holding each other accountable. Your companion should tell you what they expect of themselves for this retreat and how you can help hold them to these commitments. Be aware of your companion’s struggles and successes, and support them through both. They will do the same for you.
+2. “Checking in” daily. This is a companion’s most important duty. A check-in can be any brief, intentional conversation, ideally in person, but a phone call or even texting can work. However you do it, contact each other once a day to have a short conversation about any struggles or blessings from your day, and share any insight you have for each other. This is an opportunity to hold each other accountable, but more importantly to encourage and inspire each other throughout the retreat. 
+
+Your companion can offer you a great deal of support, but they don’t have the same depth of knowledge and experience as a trained spiritual director. If you want some additional guidance, or if you encounter a spiritual difficulty that feels beyond you, reach out to a priest, religious sister, pastor, campus minister, or other person trained in spirituality whom you trust. Before you start Ignite, your community should identify an individual who can be available to all of you as a spiritual director if needed.
+
+There is one more unofficial role of the community. While participating in Ignite, you will be giving up movies, TV, videogames, most apps, social media, drinking, and drugs, so the way you spend time with your friends may look very different. Hopefully your friends will support your journey toward freedom with God by spending time in ways that won’t exclude you, and you may find yourself having much richer interactions with your friends without so many social crutches and distractions. However, your community also exists to ensure you have a group of friends to spend time with that will support your retreat experience. So do things together with your community. Go to church, find times to pray together, but also spend ordinary social time as a community. Have dinner, play basketball, have a board game night or try an escape room, whatever brings you closer together. The members of your community are your brothers and sisters, your accountability partners, and your spiritual companions, but they are your friends too. 
