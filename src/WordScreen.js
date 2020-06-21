@@ -10,7 +10,7 @@ import Reactotron from 'reactotron-react-native';
 export default class WordScreen extends React.Component {
 
 	static navigationOptions = ({navigation}) => {
-		return { header: null }
+		return { headerShown: false }
 	}
 
 	constructor(props) {

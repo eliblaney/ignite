@@ -11,7 +11,7 @@ import Reactotron from 'reactotron-react-native';
 export default class MainScreen extends React.PureComponent {
 
 	static navigationOptions = ({navigation}) => {
-		return { header: null }
+		return { headerShown: false }
 	}
 
 	constructor(props) {

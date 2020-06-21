@@ -13,7 +13,7 @@ import Reactotron from 'reactotron-react-native';
 export default class AuthController extends React.Component {
 
 	static navigationOptions = ({navigation}) => {
-		return { header: null }
+		return { headerShown: false }
 	}
 
 	constructor(props) {

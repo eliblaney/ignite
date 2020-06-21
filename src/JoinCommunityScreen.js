@@ -9,7 +9,7 @@ import Reactotron from 'reactotron-react-native';
 export default class JoinCommunityScreen extends React.Component {
 
 	static navigationOptions = ({navigation}) => {
-		return { header: null }
+		return { headerShown: false }
 	}
 
 	constructor() {

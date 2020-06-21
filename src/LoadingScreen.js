@@ -5,7 +5,7 @@ import Colors from './Colors.js';
 export default class LoadingScreen extends React.Component {
 
 	static navigationOptions = ({navigation}) => {
-		return { header: null }
+		return { headerShown: false }
 	}
 
 	render() {
