@@ -19,6 +19,7 @@ import Colors from './Colors.js';
 import Header from './Header.js';
 import TrackPlayer from 'react-native-track-player';
 import ashWednesdays from '../config/AshWednsedays';
+import markdownstyles from './markdown-styles';
 
 import Reactotron from 'reactotron-react-native';
 
@@ -355,7 +356,7 @@ export default class Reflections extends React.Component {
 						<Text style={{marginBottom: 30}}>
 						{this.state.suscipe}
 						</Text>
-						<Markdown style={styles.maintext}>
+						<Markdown styles={markdownstyles} style={styles.maintext}>
 							{this.state.text}
 						</Markdown>
 						{audioComponent}
