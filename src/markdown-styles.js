@@ -1,18 +1,22 @@
+/* @flow */
 import Colors from './Colors.js';
 
 const styles = {
   blockQuoteSection: {
     flexDirection: 'row',
+	  marginBottom: 20,
   },
   blockQuoteSectionBar: {
     width: 3,
     height: null,
-    backgroundColor: Colors.subview,
+//    backgroundColor: '#DDDDDD',
+	backgroundColor: Colors.subview,
     marginRight: 15,
   },
   codeBlock: {
     fontFamily: 'Courier',
     fontWeight: '500',
+	  marginBottom: 20,
   },
   del: {
     textDecorationLine: 'line-through',
@@ -22,6 +26,7 @@ const styles = {
   },
   heading: {
     fontWeight: '200',
+	  marginBottom: 20,
   },
   heading1: {
     fontSize: 32,
@@ -42,14 +47,18 @@ const styles = {
     fontSize: 11,
   },
   hr: {
+    //backgroundColor: '#cccccc',
     backgroundColor: Colors.fadedText,
     height: 1,
   },
   image: {
     width: 320,
     height: 320,
+	  margin: 20,
   },
   inlineCode: {
+    //backgroundColor: '#eeeeee',
+    //borderColor: '#dddddd',
     backgroundColor: Colors.subview,
     borderColor: Colors.fadedText,
     borderRadius: 3,
@@ -62,7 +71,8 @@ const styles = {
   },
   listItem: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+	  marginBottom: 20,
   },
   listItemNumber: {
     fontWeight: 'bold',
@@ -75,12 +85,14 @@ const styles = {
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
+	  marginBottom: 20,
   },
   listItemText: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
+    //color: '#222222',
     color: Colors.modalText,
   },
   strong: {
@@ -88,22 +100,27 @@ const styles = {
   },
   table: {
     borderWidth: 1,
+    //borderColor: '#222222',
     borderColor: Colors.modalText,
     borderRadius: 3,
+	  margin: 20,
   },
   tableHeader: {
+    //backgroundColor: '#222222',
     backgroundColor: Colors.modalText,
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
   tableHeaderCell: {
+    //color: '#ffffff',
     color: Colors.background,
     fontWeight: 'bold',
     padding: 5,
   },
   tableRow: {
     borderBottomWidth: 1,
-    borderColor: Colors.primaryText,
+    //borderColor: '#222222',
+    borderColor: Colors.fadedText,
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
@@ -114,7 +131,8 @@ const styles = {
     padding: 5,
   },
   text: {
-    color: Colors.primaryText,
+    //color: '#222222',
+    color: Colors.text,
   },
   u: {
     textDecorationLine: 'underline'
@@ -122,6 +140,7 @@ const styles = {
   video: {
     width: 300,
     height: 300,
+	  margin: 20,
   }
 }
 
