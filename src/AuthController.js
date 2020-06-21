@@ -64,6 +64,7 @@ export default class AuthController extends React.Component {
 			this.setState({loading: false, auth: false, user: null, startedAt: false});
 		} catch (e) {
 			console.log(e);
+			Reactotron.log(e);
 		}
 	}
 
@@ -76,7 +77,7 @@ export default class AuthController extends React.Component {
 
 	checkCommunity = async (uid) => {
 		// entry -> is logged in? yes -> has a community?
-		let user = await this.helper.api('user', "action=getu&uid=" + uid);
+		let user = await this.helper.getUser(uid);
 		if(user.community === undefined || user.community === null) {
 			this.setState({...this.state, loading: false});
 		} else {
@@ -97,7 +98,7 @@ export default class AuthController extends React.Component {
 		// entry -> is logged in? yes -> has a community? yes -> has started retreat?
 		// user is the mysql user entry
 		if(user === null) {
-			user = await this.helper.api('user', "action=getu&uid=" + this.state.user.uid);
+			user = await this.helper.getUser(this.state.user.uid);
 		}
 
 		if(user.startedAt === undefined || user.startedAt === null) {
