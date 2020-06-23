@@ -8,7 +8,7 @@ The Ignite app is a React Native app built mainly using JavaScript. It utilizes 
 
 ## Building
 
-To build Ignite, you will need to clone this repository and setup a Firebase account and a backend service to respond to Ignite API requests. The backend service used by Ignite will soon be available on GitHub.
+To build Ignite, you will need to clone this repository and setup a Firebase account and a [backend service](https://github.com/eliblaney/ignite-backend) to respond to Ignite API requests.
 
 ## Availability
 
