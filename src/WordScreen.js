@@ -15,14 +15,14 @@ export default class WordScreen extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.maxLength = 14;
 		this.state = {
 			inputShake: false,
 			inputEditable: true,
 			inputText: "",
 		};
-		let itemList = ['amazed', 'bored', 'crazy', 'dandy', 'daring', 'energized', 'hyped', 'prayerful', 'ready', 'relaxed', 'satisfied', 'sleepy', 'sore', 'theatrical', 'tired', 'wonderful'];
+		let itemList = ['amazed', 'bored', 'crazy', 'daring', 'energized', 'hyped', 'prayerful', 'ready', 'relaxed', 'satisfied', 'sleepy', 'sore', 'theatrical', 'tired', 'wonderful'];
 		this.items = itemList.map((name, i) => { return {id: i, name: name}});
-		//this.placeholder = this.props.navigation.state.params.placeholder || "Energized";
 		this.placeholder = this.props.placeholder || "Energized";
 	}
 
@@ -48,7 +48,7 @@ export default class WordScreen extends React.Component {
 						itemTextStyle={{color: Colors.modalText}}
 						itemsContainerStyle={{maxHeight: 150}}
 						items={this.items}
-						textInputProps={{autoCapitalize: "none", maxLength: 12}}
+						textInputProps={{autoCapitalize: "none", maxLength: this.maxLength}}
 						placeholder={this.placeholder}
 						placeholderTextColor={Colors.fadedText}
 						resetValue={false}
