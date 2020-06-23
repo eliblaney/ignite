@@ -21,7 +21,7 @@ export default class WordScreen extends React.Component {
 			inputEditable: true,
 			inputText: "",
 		};
-		let itemList = ['amazed', 'bored', 'crazy', 'dandy', 'daring', 'energized', 'hyped', 'prayerful', 'ready', 'relaxed', 'satisfied', 'sleepy', 'sore', 'theatrical', 'tired', 'wonderful'];
+		let itemList = ['amazed', 'bored', 'crazy', 'daring', 'energized', 'hyped', 'prayerful', 'ready', 'relaxed', 'satisfied', 'sleepy', 'sore', 'theatrical', 'tired', 'wonderful'];
 		this.items = itemList.map((name, i) => { return {id: i, name: name}});
 		this.placeholder = this.props.placeholder || "Energized";
 	}
