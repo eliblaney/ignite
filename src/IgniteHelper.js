@@ -159,4 +159,27 @@ export default class IgniteHelper {
 		}
 	}
 
+	padnum = (num, len, ch) => {
+		if(num >= Math.pow(10, len - 1)) return num;
+		return ("" + ch).repeat(len - 1) + num;
+	}
+
+	toISO = (date) => {
+		let iso = date.getFullYear() + '-' + this.padnum(date.getMonth() + 1, 2, '0') + '-' + this.padnum(date.getDate(), 2, '0');
+		return iso;
+	}
+
+	daysUntil = (date) => {
+		// get today displayed as an ISO date
+		let todayDate = new Date();
+		let today = this.toISO(todayDate);
+
+		// consistent times & timezones
+		todayDate = new Date(today + "T00:00:00Z");
+		let compareDate = new Date(date + "T00:00:00Z")
+
+		let daysUntil = (compareDate - todayDate)/1000/60/60/24;
+		return daysUntil;
+	}
+
 };
