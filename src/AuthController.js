@@ -130,15 +130,11 @@ export default class AuthController extends React.Component {
 		}
 
 		let bar = word.indexOf("|");
-
-		let wordDate = new Date(Date.parse(word.substring(0, bar)));
-		wordDate.setHours(0);
-		wordDate.setMinutes(0);
-		wordDate.setSeconds(0);
-		wordDate.setMilliseconds(0);
+		let wordDate = word.substring(0, bar);
 
 		// expired = if the word is at least yesterday's word
-		let expired = parseInt((this.today - wordDate)/1000/60/60/24, 10) > 0;
+		let expired = this.helper.daysUntil(wordDate) < 0;
+
 		if(expired) {
 			this.setState({...this.state, word: null, wordExpired: true, loading: false});
 			return;
@@ -153,8 +149,8 @@ export default class AuthController extends React.Component {
 		this.props.navigation.pop()
 		this.setState({...this.state, loading: true, word: word, wordExpired: false})
 
-		let wordPlusDate = encodeURI(this.today.toISOString() + "|" + word);
-		await this.helper.api('user', 'action=word&uid=' + this.state.user.uid + '&word=' + wordPlusDate);
+		let wordPlusDate = encodeURI(this.helper.toISO(this.today) + "|" + word);
+		await this.helper.api('user', 'action=word&uid=' + encodeURI(this.state.user.uid) + '&word=' + wordPlusDate);
 		this.setState({...this.state, loading: false})
 	}
 
