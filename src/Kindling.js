@@ -1,4 +1,5 @@
 import React from 'react';
+import auth from "@react-native-firebase/auth";
 import { Fragment, ScrollView, View, Text, TextInput, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 import Colors from './Colors.js';
@@ -10,6 +11,45 @@ import IgniteConfig from '../config/IgniteConfig';
 import IgniteHelper from './IgniteHelper';
 
 import Reactotron from 'reactotron-react-native';
+
+const Account = withNavigation(class Navigation extends React.Component {
+
+	constructor(props) {
+		super(props);
+
+		this.params = this.props.navigation.state.params;
+		this.state = {uid: this.params.uid};
+	}
+
+	logout = () => {
+		auth().signOut().then(() => {
+			this.props.navigation.goBack();
+			this.params.reauth()
+		});
+	}
+
+	static navigationOptions = ({navigation}) => {
+		return {
+			headerMode: 'float',
+			headerBackTitleVisible: true,
+			title: 'Edit Account'
+		}
+	}
+
+	render() {
+		return (
+			<View style={{flex: 1, flexDirection: 'column'}}>
+				<Button onPress={this.logout}
+				title="Logout"
+				type="solid"
+				titleStyle={{fontSize: 16}}
+				buttonStyle={{margin: 10, backgroundColor: "#dd2222"}}
+				/>
+			</View>
+		);
+	}
+
+});
 
 const Suscipe = withNavigation(class Suscipe extends React.Component {
 
@@ -109,8 +149,6 @@ const KindlingDetail = withNavigation(class KindlingDetail extends React.Compone
 
 })
 
-export { KindlingDetail, Suscipe };
-
 export default withNavigation(class Kindling extends React.Component {
 
 	createDetail = (title, file) => {
@@ -134,8 +172,9 @@ export default withNavigation(class Kindling extends React.Component {
 			itemWidth={50}
 			title={title}
 			titleStyle={{color: Colors.text}}
-			onPress={() => this.props.navigation.push('suscipe', {
-				uid: this.props.uid
+			onPress={() => this.props.navigation.push(navigation, {
+				uid: this.props.uid,
+				reauth: this.props.reauth,
 			})}
 		/>;
 		item.displayName = 'Item';
@@ -172,6 +211,7 @@ export default withNavigation(class Kindling extends React.Component {
 					{ this.createDetail('How to prepare for Ignite', 'prepareforignite') }
 					{ this.createHeader('Settings') }
 					{ this.createCustom('Edit Suscipe', 'suscipe') }
+					{ this.createCustom('Account', 'account') }
 					{ /* this.createDetail('Dark Mode', 'whatisignite') */ }
 					{ this.createHeader('About') }
 					{ this.createDetail('Attributions', 'attributions') }
@@ -182,6 +222,8 @@ export default withNavigation(class Kindling extends React.Component {
 	}
 
 })
+
+export { KindlingDetail, Suscipe, Account };
 
 const styles = StyleSheet.create({
 	container: {

@@ -30,8 +30,8 @@ export default class AuthController extends React.Component {
 	}
 
 	reauth = () => {
-		// This is called when the retreat start date changes,
-		// for a fresh perspective
+		// This is called when the retreat start date changes
+		// and on logout for a fresh perspective
 		this.setState({ loading: true, auth: false, user: null, word: null, currentDay: null, daysUntil: null, startedAt: false });
 		this.componentDidMount();
 	}

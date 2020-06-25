@@ -23,7 +23,7 @@ export default class MainScreen extends React.PureComponent {
 					<Community reauth={this.props.reauth} uid={this.props.user.uid} community={this.props.community} currentDay={this.props.currentDay} daysUntil={this.props.daysUntil} startedAt={this.props.started ? this.props.startedAt : false} />
 		);
 		let kindling = (
-					<Kindling uid={this.props.user.uid} />
+					<Kindling reauth={this.props.reauth} uid={this.props.user.uid} />
 		);
 		let reflections = (
 					<Reflections uid={this.props.user.uid} community={this.props.community} startedAt={this.props.started ? this.props.startedAt : false} />

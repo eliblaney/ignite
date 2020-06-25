@@ -9,7 +9,7 @@ import MainScreen from './src/MainScreen.js';
 import WordScreen from './src/WordScreen.js';
 import JoinCommunityScreen from './src/JoinCommunityScreen.js';
 import FirebaseLogin from './FirebaseLogin';
-import { KindlingDetail, Suscipe } from './src/Kindling.js';
+import { KindlingDetail, Suscipe, Account } from './src/Kindling.js';
 
 import Reactotron from 'reactotron-react-native';
 
@@ -22,7 +22,7 @@ if(__DEV__) {
 const AppContainer = createAppContainer(
 	createStackNavigator(
 		{
-			auth: AuthController,
+			Back: AuthController,
 			loading: LoadingScreen,
 			main: MainScreen,
 			word: WordScreen,
@@ -30,9 +30,11 @@ const AppContainer = createAppContainer(
 			login: FirebaseLogin,
 			kindling: KindlingDetail,
 			suscipe: Suscipe,
+			account: Account,
 		},
 		{
-			initialRouteName: "auth",
+			// "Back" button label shown on submenues like suscipe
+			initialRouteName: 'Back',
 		}
 	)
 );
