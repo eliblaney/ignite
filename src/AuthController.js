@@ -32,8 +32,12 @@ export default class AuthController extends React.Component {
 	reauth = () => {
 		// This is called when the retreat start date changes
 		// and on logout for a fresh perspective
-		this.setState({ loading: true, auth: false, user: null, word: null, currentDay: null, daysUntil: null, startedAt: false });
+		this.logout();
 		this.componentDidMount();
+	}
+
+	logout = () => {
+		this.setState({ loading: true, auth: false, user: null, word: null, currentDay: null, daysUntil: null, startedAt: false });
 	}
 
 	componentDidMount() {
@@ -215,7 +219,7 @@ export default class AuthController extends React.Component {
 			return <WordScreen word={this.state.word} onNext={this.onWord} />
 		}
 
-		return <MainScreen reauth={this.reauth} user={this.state.user} community={this.state.community} currentDay={this.state.currentDay} daysUntil={this.state.daysUntil} started={this.state.started} startedAt={this.state.startedAt} age={this.state.age} />
+		return <MainScreen reauth={this.reauth} logout={this.logout} user={this.state.user} community={this.state.community} currentDay={this.state.currentDay} daysUntil={this.state.daysUntil} started={this.state.started} startedAt={this.state.startedAt} age={this.state.age} />
 	}
 	
 };

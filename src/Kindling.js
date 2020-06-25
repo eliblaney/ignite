@@ -24,7 +24,7 @@ const Account = withNavigation(class Navigation extends React.Component {
 	logout = () => {
 		auth().signOut().then(() => {
 			this.props.navigation.goBack();
-			this.params.reauth()
+			this.params.logout()
 		});
 	}
 
@@ -174,7 +174,7 @@ export default withNavigation(class Kindling extends React.Component {
 			titleStyle={{color: Colors.text}}
 			onPress={() => this.props.navigation.push(navigation, {
 				uid: this.props.uid,
-				reauth: this.props.reauth,
+				logout: this.props.logout,
 			})}
 		/>;
 		item.displayName = 'Item';
