@@ -86,12 +86,8 @@ export default class AuthController extends React.Component {
 			this.setState({...this.state, loading: false});
 		} else {
 			// find age of user in days (age = 1 on first day of account creation)
-			let createdDate = new Date(parseInt(user.createdAt))
-			createdDate.setHours(0)
-			createdDate.setMinutes(0)
-			createdDate.setSeconds(0)
-			createdDate.setMilliseconds(0)
-			let age = parseInt((this.today - createdDate)/1000/60/60/24, 10) + 1
+			let createdDate = new Date(user.createdAt);
+			let age = -this.helper.daysUntil(this.helper.toISO(createdDate));
 
 			this.setState({...this.state, community: user.community, age: age});
 			await this.checkStartedAt(user);
@@ -108,31 +104,17 @@ export default class AuthController extends React.Component {
 		if(user.startedAt === undefined || user.startedAt === null) {
 			this.setState({...this.state, started: false});
 		} else {
-			let now = Date.now();
-			let dateStarted = Date.parse(user.startedAt);
-			let started = now > dateStarted;
-
-			// preserved time data
-			let actualStartedAt = user.startedAt;
-
-			// remove time data for accurate date comparison
-			let startedAt = new Date(Date.parse(actualStartedAt))
-			startedAt.setHours(0)
-			startedAt.setMinutes(0)
-			startedAt.setSeconds(0)
-			startedAt.setMilliseconds(0)
+			let daysUntilStart = this.helper.daysUntil(user.startedAt);
+			let started = daysUntilStart <= 0;
 
 			if(started) {
 				// current day of the retreat (1, 2, 3, ...)
-				let currentDay = parseInt((this.today - startedAt)/1000/60/60/24, 10) + 1
+				let currentDay = -daysUntilStart;
 
-				this.setState({...this.state, started: true, startedAt: startedAt, currentDay: currentDay});
+				this.setState({...this.state, started: true, startedAt: user.startedAt, currentDay: currentDay});
 			} else {
-				// Days until the retreat starts
-				let daysUntil = parseInt((startedAt - this.today)/1000/60/60/24, 10)
-
 				// start date is in the future (probably next Ash Wednesday)
-				this.setState({...this.state, started: false, daysUntil: daysUntil});
+				this.setState({...this.state, started: false, daysUntil: daysUntilStart});
 			}
 		}
 

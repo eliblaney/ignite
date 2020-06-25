@@ -170,8 +170,7 @@ export default class Reflections extends React.Component {
 		// day refers to the current day of the retreat (1, 2, 3, etc)
 		// we obtain this value by subtracting the starting date from the
 		// target date and converting from milliseconds to days
-		// and add 1 because the days are not zero indexed
-		let day = parseInt((date - this.state.startedAt)/1000/60/60/24, 10) + 1;
+		let day = parseInt((date - this.state.startedAt)/1000/60/60/24, 10);
 		return day;
 	}
 
@@ -318,7 +317,7 @@ export default class Reflections extends React.Component {
 								"The retreat starts in " + daysUntil + " day" + (daysUntil == 1 ? "":"s") + ". While you wait, read more about Ignite on the Kindling page!"
 							) : (
 								this.state.isOwner ?
-								"It looks like you haven't set a retreat start date yet! You can change that on the community page."
+								"Welcome to Ignite! You are your community's leader, so set a start date for the retreat and invite your friends to join you!"
 								: "It looks like your group coordinator hasn't set a retreat start date yet. While you wait, read more about Ignite on the Kindling page!"
 							)
 						}
