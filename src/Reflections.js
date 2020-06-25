@@ -306,13 +306,22 @@ export default class Reflections extends React.Component {
 		if(!this.props.startedAt) {
 			// user hasn't started the retreat yet
 			let splashText = this.state.splashText;
+			let daysUntil = this.props.daysUntil;
 			return (
 				<LinearGradient colors={[Colors.primary, Colors.secondary]} style={[styles.container, styles.gradientBackground]}>
 					<Text style={{fontSize: 26, fontWeight: 'bold', marginBottom: 50, color: Colors.primaryText}}>
 						{splashText}
 					</Text>
 					<Text style={{color: Colors.primaryText, fontSize: 16, margin: 20}}>
-						It looks like { this.state.isOwner ? "you haven't" : "your group coordinator hasn't" } started the retreat yet! While you wait, read more about Ignite on the Kindling page!
+						{
+							daysUntil > 0 ? (
+								"The retreat starts in " + daysUntil + " day" + (daysUntil == 1 ? "":"s") + ". While you wait, read more about Ignite on the Kindling page!"
+							) : (
+								this.state.isOwner ?
+								"It looks like you haven't set a retreat start date yet! You can change that on the community page."
+								: "It looks like your group coordinator hasn't set a retreat start date yet. While you wait, read more about Ignite on the Kindling page!"
+							)
+						}
 					</Text>
 					<View style={{marginTop: 20, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
 						<VIcon name='arrow-left' size={20} style={{marginRight: 20}} color={Colors.primaryText} />

@@ -26,7 +26,7 @@ export default class MainScreen extends React.PureComponent {
 					<Kindling logout={this.props.logout} uid={this.props.user.uid} />
 		);
 		let reflections = (
-					<Reflections uid={this.props.user.uid} community={this.props.community} startedAt={this.props.started ? this.props.startedAt : false} />
+					<Reflections uid={this.props.user.uid} community={this.props.community} startedAt={this.props.started ? this.props.startedAt : false} daysUntil={this.props.daysUntil} />
 		);
 
 		if(this.props.age < 2) {
