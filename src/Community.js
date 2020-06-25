@@ -40,7 +40,7 @@ export default class Community extends React.Component {
 		// Because the creator of the community is the first member...
 		let isOwner = (members[0] === this.props.uid);
 		let joinComponent
-		if(!this.props.currentDay && community.joincode !== undefined && community.joincode !== null && community.joincode.length > 0) {
+		if(!this.props.startedAt && community.joincode !== undefined && community.joincode !== null && community.joincode.length > 0) {
 			let joincode = community.joincode.toUpperCase();
 			joinComponent = (
 				<View style={styles.joincodeView}>
@@ -271,9 +271,7 @@ export default class Community extends React.Component {
 									buttonStyle={{marginRight: 10}}
 							/>
 							<Button onPress={async () => {
-								var startDate = new Date(this.state.chosenStartDate);
-								startDate = startDate.getTime() + startDate.getTimezoneOffset()*60*1000;
-								startDate = new Date(startDate).toISOString();
+								var startDate = this.state.chosenStartDate;
 								await this.helper.api('community', "action=ignite&id=" + encodeURI(this.props.community) + "&start=" + encodeURI(startDate));
 								this.setState({...this.state, pickDate: false});
 								this.props.reauth();
