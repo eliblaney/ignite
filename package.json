@@ -7,7 +7,7 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint .",
+    "lint": "eslint src",
     "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/Ignite/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'"
   },
   "dependencies": {
@@ -49,8 +49,14 @@
     "@babel/core": "^7.10.3",
     "@babel/runtime": "^7.10.3",
     "@react-native-community/eslint-config": "^2.0.0",
+    "babel-eslint": "^10.1.0",
     "babel-jest": "^26.0.1",
-    "eslint": "^7.3.0",
+    "eslint": "^7.3.1",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-native": "^3.8.1",
     "jest": "^26.0.1",
     "react-test-renderer": "16.11.0"
   },
