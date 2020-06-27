@@ -1,53 +1,67 @@
-import React from 'react';
-import Colors from './Colors.js';
+import React from "react";
+import Swiper from "react-native-swiper"; /* Edits: Comment {dots}, make conditional at componentWillMount get both lines */
+import Colors from "./Colors";
 
-import Swiper from 'react-native-swiper'; /* Edits: Comment {dots}, make conditional at componentWillMount get both lines */
-import Reflections from './Reflections.js';
-import Community from './Community.js';
-import Kindling from './Kindling.js';
-
-import Reactotron from 'reactotron-react-native';
+import Reflections from "./Reflections";
+import Community from "./Community";
+import Kindling from "./Kindling";
 
 export default class MainScreen extends React.PureComponent {
+  static navigationOptions = ({navigation}) => {
+    return {headerShown: false};
+  };
 
-	static navigationOptions = ({navigation}) => {
-		return { headerShown: false }
-	}
+  render() {
+    const {
+      reauth,
+      community,
+      currentDay,
+      daysUntil,
+      started,
+      startedAt,
+      logout,
+      user,
+      age,
+    } = this.props;
 
-	constructor(props) {
-		super(props);
-	}
+    const communityComponent = (
+      <Community
+        reauth={reauth}
+        uid={user.uid}
+        community={community}
+        currentDay={currentDay}
+        daysUntil={daysUntil}
+        startedAt={started ? startedAt : false}
+      />
+    );
+    const kindlingComponent = <Kindling logout={logout} uid={user.uid} />;
+    const reflectionsComponent = (
+      <Reflections
+        uid={user.uid}
+        community={community}
+        startedAt={started ? startedAt : false}
+        daysUntil={daysUntil}
+      />
+    );
 
-	render() {
-		let community = (
-					<Community reauth={this.props.reauth} uid={this.props.user.uid} community={this.props.community} currentDay={this.props.currentDay} daysUntil={this.props.daysUntil} startedAt={this.props.started ? this.props.startedAt : false} />
-		);
-		let kindling = (
-					<Kindling logout={this.props.logout} uid={this.props.user.uid} />
-		);
-		let reflections = (
-					<Reflections uid={this.props.user.uid} community={this.props.community} startedAt={this.props.started ? this.props.startedAt : false} daysUntil={this.props.daysUntil} />
-		);
-
-		if(this.props.age < 2) {
-			// if it's their first time opening the app, show the
-			// tutorial message on the reflections screen
-			return (
-				<Swiper style={{backgroundColor: Colors.background}}>
-					{reflections}
-					{community}
-					{kindling}
-				</Swiper>
-			);
-		} else {
-			return (
-				<Swiper>
-					{community}
-					{kindling}
-					{reflections}
-				</Swiper>
-			);
-		}
-	}
-
-};
+    if (age < 2) {
+      // if it's their first time opening the app, show the
+      // tutorial message on the reflections screen
+      return (
+        <Swiper style={{backgroundColor: Colors.background}}>
+          {reflectionsComponent}
+          {communityComponent}
+          {kindlingComponent}
+        </Swiper>
+      );
+    } else {
+      return (
+        <Swiper>
+          {communityComponent}
+          {kindlingComponent}
+          {reflectionsComponent}
+        </Swiper>
+      );
+    }
+  }
+}

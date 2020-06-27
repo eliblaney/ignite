@@ -1,203 +1,279 @@
-import React from 'react';
-import auth from '@react-native-firebase/auth';
-import IgniteHelper from './IgniteHelper.js';
+import React from "react";
+import auth from "@react-native-firebase/auth";
+import Reactotron from "reactotron-react-native";
+import IgniteHelper from "./IgniteHelper";
 
-import JoinCommunityScreen from './JoinCommunityScreen'
-import FirebaseLogin from '../FirebaseLogin';
-import LoadingScreen from './LoadingScreen.js';
-import MainScreen from './MainScreen.js';
-import WordScreen from './WordScreen.js';
-
-import Reactotron from 'reactotron-react-native';
+import JoinCommunityScreen from "./JoinCommunityScreen";
+import FirebaseLogin from "../FirebaseLogin";
+import LoadingScreen from "./LoadingScreen";
+import MainScreen from "./MainScreen";
+import WordScreen from "./WordScreen";
 
 export default class AuthController extends React.Component {
+  static navigationOptions = ({navigation}) => {
+    return {headerShown: false};
+  };
 
-	static navigationOptions = ({navigation}) => {
-		return { headerShown: false }
-	}
+  constructor(props) {
+    super(props);
 
-	constructor(props) {
-		super(props);
-		this.helper = new IgniteHelper();
+    this.today = new Date();
+    this.today.setHours(0);
+    this.today.setMinutes(0);
+    this.today.setSeconds(0);
+    this.today.setMilliseconds(0);
 
-		this.today = new Date();
-		this.today.setHours(0);
-		this.today.setMinutes(0);
-		this.today.setSeconds(0);
-		this.today.setMilliseconds(0);
+    this.state = {
+      loading: true,
+      auth: false,
+      user: null,
+      word: null,
+      currentDay: null,
+      daysUntil: null,
+      startedAt: false,
+    };
+  }
 
-		this.state = { loading: true, auth: false, user: null, word: null, currentDay: null, daysUntil: null, startedAt: false };
-	}
+  componentDidMount() {
+    // entry -> is logged in?
+    auth().onAuthStateChanged(async user => {
+      if (user !== undefined && user !== null) {
+        await this.setState({auth: true, user});
+        this.checkCommunity(user.uid);
+      } else {
+        this.setState({loading: false, auth: false, user: null});
+      }
+    });
+  }
 
-	reauth = () => {
-		// This is called when the retreat start date changes
-		// and on logout for a fresh perspective
-		this.logout();
-		this.componentDidMount();
-	}
+  reauth = () => {
+    // This is called when the retreat start date changes
+    // and on logout for a fresh perspective
+    this.logout();
+    this.componentDidMount();
+  };
 
-	logout = () => {
-		this.setState({ loading: true, auth: false, user: null, word: null, currentDay: null, daysUntil: null, startedAt: false });
-	}
+  logout = () => {
+    this.setState({
+      loading: true,
+      auth: false,
+      user: null,
+      word: null,
+      currentDay: null,
+      daysUntil: null,
+      startedAt: false,
+    });
+  };
 
-	componentDidMount() {
-		// entry -> is logged in?
-		auth().onAuthStateChanged(async user => {
-			if(user !== undefined && user !== null) {
-				await this.setState({...this.state, auth: true, user: user});
-				this.checkCommunity(user.uid);
-			} else {
-				this.setState({...this.state, loading: false, auth: false, user: null});
-			}
-		});
-	}
+  onAuth = async user => {
+    const {navigation} = this.props;
+    navigation.pop();
 
-	onAuth = async (user) => {
-		this.props.navigation.pop()
-		// User has succesfully logged in or registered
-		this.setState({...this.state, loading: true, auth: true, user: user});
+    // User has succesfully logged in or registered
+    this.setState({loading: true, auth: true, user});
 
-		await this.checkCommunity(user.uid);
-		this.forceUpdate();
-	};
+    await this.checkCommunity(user.uid);
+    this.forceUpdate();
+  };
 
-	signOutUser = async () => {
-		try {
-			await auth().signOut();
-			// reset state to default (but finished loading)
-			this.setState({loading: false, auth: false, user: null, startedAt: false});
-		} catch (e) {
-			console.log(e);
-			Reactotron.log(e);
-		}
-	}
+  signOutUser = async () => {
+    try {
+      await auth().signOut();
+      // reset state to default (but finished loading)
+      this.setState({
+        loading: false,
+        auth: false,
+        user: null,
+        startedAt: false,
+      });
+    } catch (e) {
+      console.log(e);
+      Reactotron.log(e);
+    }
+  };
 
-	onCommunity = (communityid) => {
-		// User has joined or created a community
-		this.props.navigation.pop()
-		this.setState({...this.state, loading: true, community: communityid});
-		this.checkStartedAt();
-	}
+  onCommunity = communityid => {
+    // User has joined or created a community
+    const {navigation} = this.props;
+    navigation.pop();
 
-	checkCommunity = async (uid) => {
-		// entry -> is logged in? yes -> has a community?
-		let user = await this.helper.getUser(uid);
-		if(user.community === undefined || user.community === null) {
-			this.setState({...this.state, loading: false});
-		} else {
-			// find age of user in days (age = 1 on first day of account creation)
-			let createdDate = new Date(user.createdAt);
-			let age = -this.helper.daysUntil(this.helper.toISO(createdDate));
+    this.setState({loading: true, community: communityid});
+    this.checkStartedAt();
+  };
 
-			this.setState({...this.state, community: user.community, age: age});
-			await this.checkStartedAt(user);
-		}
-	}
+  checkCommunity = async uid => {
+    // entry -> is logged in? yes -> has a community?
+    const user = await IgniteHelper.getUser(uid);
+    if (user.community === undefined || user.community === null) {
+      this.setState({loading: false});
+    } else {
+      // find age of user in days (age = 1 on first day of account creation)
+      const createdDate = new Date(user.createdAt);
+      const age = -IgniteHelper.daysUntil(IgniteHelper.toISO(createdDate));
 
-	checkStartedAt = async (user = null) => {
-		// entry -> is logged in? yes -> has a community? yes -> has started retreat?
-		// user is the mysql user entry
-		if(user === null) {
-			user = await this.helper.getUser(this.state.user.uid);
-		}
+      this.setState({community: user.community, age});
+      await this.checkStartedAt(user);
+    }
+  };
 
-		if(user.startedAt === undefined || user.startedAt === null) {
-			this.setState({...this.state, started: false});
-		} else {
-			let daysUntilStart = this.helper.daysUntil(user.startedAt);
-			let started = daysUntilStart <= 0;
+  checkStartedAt = async (u = null) => {
+    // entry -> is logged in? yes -> has a community? yes -> has started retreat?
+    // user is the mysql user entry
+    if (u === null) {
+      const {user} = this.state;
+      u = await IgniteHelper.getUser(user.uid);
+    }
 
-			if(started) {
-				// current day of the retreat (1, 2, 3, ...)
-				let currentDay = -daysUntilStart;
+    if (u.startedAt === undefined || u.startedAt === null) {
+      this.setState({started: false});
+    } else {
+      const daysUntilStart = IgniteHelper.daysUntil(u.startedAt);
+      const started = daysUntilStart <= 0;
 
-				this.setState({...this.state, started: true, startedAt: user.startedAt, currentDay: currentDay});
-			} else {
-				// start date is in the future (probably next Ash Wednesday)
-				this.setState({...this.state, started: false, daysUntil: daysUntilStart});
-			}
-		}
+      if (started) {
+        // current day of the retreat (1, 2, 3, ...)
+        const currentDay = -daysUntilStart + 1;
 
-		await this.checkWord(user);
-	}
+        this.setState({
+          started: true,
+          startedAt: u.startedAt,
+          currentDay,
+        });
+      } else {
+        // start date is in the future (probably next Ash Wednesday)
+        this.setState({
+          started: false,
+          daysUntil: daysUntilStart,
+        });
+      }
+    }
 
-	checkWord = async (user) => {
-		let word = user.word;
+    await this.checkWord(u);
+  };
 
-		if(word === undefined || word === null || typeof(word) !== 'string' || word.indexOf("|") < 0) {
-			this.setState({...this.state, word: null, wordExpired: true, loading: false});
-			return;
-		}
+  checkWord = async user => {
+    const {word} = user;
 
-		let bar = word.indexOf("|");
-		let wordDate = word.substring(0, bar);
+    if (
+      word === undefined ||
+      word === null ||
+      typeof word !== "string" ||
+      word.indexOf("|") < 0
+    ) {
+      this.setState({
+        word: null,
+        wordExpired: true,
+        loading: false,
+      });
+      return;
+    }
 
-		// expired = if the word is at least yesterday's word
-		let expired = this.helper.daysUntil(wordDate) < 0;
+    const bar = word.indexOf("|");
+    const wordDate = word.substring(0, bar);
 
-		if(expired) {
-			this.setState({...this.state, word: null, wordExpired: true, loading: false});
-			return;
-		}
+    // expired = if the word is at least yesterday's word
+    const expired = IgniteHelper.daysUntil(wordDate) < 0;
 
-		let wordText = word.substring(bar + 1);
+    if (expired) {
+      this.setState({
+        word: null,
+        wordExpired: true,
+        loading: false,
+      });
+      return;
+    }
 
-		await this.setState({...this.state, word: wordText, wordExpired: false, loading: false});
-	}
+    const wordText = word.substring(bar + 1);
 
-	onWord /* and upWord */ = async (word) => {
-		this.props.navigation.pop()
-		this.setState({...this.state, loading: true, word: word, wordExpired: false})
+    await this.setState({
+      word: wordText,
+      wordExpired: false,
+      loading: false,
+    });
+  };
 
-		let wordPlusDate = encodeURI(this.helper.toISO(this.today) + "|" + word);
-		await this.helper.api('user', 'action=word&uid=' + encodeURI(this.state.user.uid) + '&word=' + wordPlusDate);
-		this.setState({...this.state, loading: false})
-	}
+  onWord /* and upWord */ = async word => {
+    const {navigation} = this.props;
+    const {user} = this.state;
+    navigation.pop();
 
-	render() {
-		let navigation = this.props.navigation;
+    this.setState({
+      loading: true,
+      word,
+      wordExpired: false,
+    });
 
-		if(this.state.loading) {
-			return <LoadingScreen />;
-		}
+    const wordPlusDate = encodeURI(`${IgniteHelper.toISO(this.today)}|${word}`);
+    await IgniteHelper.api(
+      "user",
+      `action=word&uid=${encodeURI(user.uid)}&word=${wordPlusDate}`
+    );
 
-		if(!this.state.auth /* you call it overdramatic, I call it safety */
-			|| this.state.user === undefined
-			|| this.state.user === null
-			|| this.state.user.uid === undefined
-			|| this.state.user.uid === null) {
+    this.setState({loading: false});
+  };
 
-			// FirebaseLogin's login callback is nice, but doesn't call on
-			// register. I added an onAuth callback that gets called for
-			// both logging in and registering.
-			/*navigation.navigate('login', {
-				login: user => {},
-				onAuth: this.onAuth,
-			});*/
-			return <FirebaseLogin login={user => {}} onAuth={this.onAuth} />
+  render() {
+    const {
+      /* eslint-disable no-shadow */
+      auth,
+      user,
+      /* eslint-enable no-shadow */
+      loading,
+      wordExpired,
+      word,
+      community,
+      currentDay,
+      daysUntil,
+      started,
+      startedAt,
+      age,
+    } = this.state;
 
-		}
+    if (loading) {
+      return <LoadingScreen />;
+    }
 
-		// if the user doesn't have a community, that is the first thing
-		// they should do
-		if(this.state.community === undefined) {
-			/*navigation.navigate('join', {
-				uid: this.state.user.uid,
-				onCommunity: this.onCommunity,
-			});*/
-			return <JoinCommunityScreen uid={this.state.user.uid} onCommunity={this.onCommunity} reauth={this.reauth} />;
-		}
+    if (
+      !auth /* you call it overdramatic, I call it safety */ ||
+      user === undefined ||
+      user === null ||
+      user.uid === undefined ||
+      user.uid === null
+    ) {
+      // FirebaseLogin's login callback is nice, but doesn't call on
+      // register. I added an onAuth callback that gets called for
+      // both logging in and registering.
+      return <FirebaseLogin login={_user => {}} onAuth={this.onAuth} />;
+    }
 
-		if(this.state.wordExpired) {
-			/*navigation.navigate('word', {
-				word: this.state.word,
-				onNext: this.onWord,
-			})
-			*/
-			return <WordScreen word={this.state.word} onNext={this.onWord} />
-		}
+    // if the user doesn't have a community, that is the first thing
+    // they should do
+    if (community === undefined) {
+      return (
+        <JoinCommunityScreen
+          uid={user.uid}
+          onCommunity={this.onCommunity}
+          reauth={this.reauth}
+        />
+      );
+    }
 
-		return <MainScreen reauth={this.reauth} logout={this.logout} user={this.state.user} community={this.state.community} currentDay={this.state.currentDay} daysUntil={this.state.daysUntil} started={this.state.started} startedAt={this.state.startedAt} age={this.state.age} />
-	}
-	
-};
+    if (wordExpired) {
+      return <WordScreen word={word} onNext={this.onWord} />;
+    }
+
+    return (
+      <MainScreen
+        reauth={this.reauth}
+        logout={this.logout}
+        user={user}
+        community={community}
+        currentDay={currentDay}
+        daysUntil={daysUntil}
+        started={started}
+        startedAt={startedAt}
+        age={age}
+      />
+    );
+  }
+}

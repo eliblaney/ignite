@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint src",
+    "lint": "eslint --ext .js src/",
+    "lint:fix": "eslint --fix --ext .js src/",
     "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/Ignite/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'"
   },
   "dependencies": {
@@ -57,10 +58,16 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.20.0",
     "eslint-plugin-react-native": "^3.8.1",
+    "husky": "^4.2.5",
     "jest": "^26.0.1",
     "react-test-renderer": "16.11.0"
   },
   "jest": {
     "preset": "react-native"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint:fix"
+    }
   }
 }

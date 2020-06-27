@@ -25,18 +25,26 @@ module.exports = {
   },
   'rules': {
     "prettier/prettier": 1,
-    "no-param-reassign": 0,
-    'no-use-before-define': 'off',
-    'react/jsx-filename-extension': 'off',
-    'react/prop-types': 'off',
-    'comma-dangle': 'off',
     "react-native/no-unused-styles": 2,
     "react-native/no-raw-text": 2,
     "react-native/no-single-element-style-arrays": 2,
-    "keyword-spacing": ["error", { "overrides": {
+    /*"keyword-spacing": [2, { "overrides": {
       "if": { "after": false },
       "for": { "after": false },
       "while": { "after": false }
-    }}],
+    }}],*/
+    "keyword-spacing": 2,
+    "no-use-before-define": 0,
+    "react/jsx-filename-extension": 0,
+    "react/prop-types": 0,
+    "comma-dangle": 0,
+    "react-native/no-inline-styles": 0,
+    "no-did-mount-set": 0,
+    "import/no-named-default": 0,
+    "no-bitwise": 0,
+    "react/no-did-mount-set-state": 0,
+    "jsx-a11y/accessible-emoji": 0,
+    "no-param-reassign": 0,
+    "react/prefer-stateless-function": 0,
   }
 };
