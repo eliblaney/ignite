@@ -162,7 +162,7 @@ export default class Community extends React.Component {
 
   post = async () => {
     const {writePostText, writePostPrivacy} = this.state;
-    const {uid, currentDay, reauth} = this.props;
+    const {uid, currentDay} = this.props;
     const text = writePostText;
 
     if (
@@ -181,7 +181,7 @@ export default class Community extends React.Component {
         `action=post&uid=${uid}&date=${date}&day=${currentDay}&priv=${privacy}&data=${post}`
       );
 
-      reauth();
+      this.setState({doRefresh: true});
     }
   };
 
