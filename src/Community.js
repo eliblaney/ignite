@@ -61,7 +61,7 @@ export default class Community extends React.Component {
     }
     const users = await Promise.all(
       members.map(async m => {
-        const u = await this.getUser(m);
+        const u = await IgniteHelper.getUser(m);
         return u;
       })
     );
@@ -154,11 +154,6 @@ export default class Community extends React.Component {
       ashWednesday: nextAshWednesday,
     });
   }
-
-  getUser = async uid => {
-    const user = await IgniteHelper.api("user", `action=getu&uid=${uid}`);
-    return user;
-  };
 
   post = async () => {
     const {writePostText, writePostPrivacy} = this.state;
