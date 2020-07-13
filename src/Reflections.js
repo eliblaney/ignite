@@ -23,6 +23,7 @@ export default class Reflections extends React.Component {
       isLent: false,
       splashText: "",
       suscipe: "",
+      refreshing: true,
     };
 
     // I dream of the day when JS Date will finally know the months of the year
@@ -197,6 +198,7 @@ export default class Reflections extends React.Component {
 
     this.setState({
       loading: false,
+      refreshing: false,
       text: response.content,
       audio: response.audio,
       day,
@@ -249,6 +251,7 @@ export default class Reflections extends React.Component {
       day,
       suscipe,
       text,
+      refreshing,
     } = this.state;
     const {startedAt, daysUntil} = this.props;
 
@@ -315,6 +318,24 @@ export default class Reflections extends React.Component {
     const dateString = `${this.weekdays[date.getDay()]} ${
       this.months[date.getMonth()]
     } ${date.getDate()}`;
+
+    if (refreshing) {
+      return (
+        <View style={styles.container}>
+          <ReflectionNavigation
+            title={dateString}
+            isLent={isLent}
+            startedAt={startedAt}
+            date={date}
+            day={day}
+            onChange={this.updateContent}
+          />
+          <View style={styles.readerContainer}>
+            <LoadingScreen />
+          </View>
+        </View>
+      );
+    }
 
     let sundayComponent;
     if (isSunday) {
