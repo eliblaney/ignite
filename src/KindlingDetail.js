@@ -54,9 +54,7 @@ export default withNavigation(
           style={styles.container}
           showVerticalScrollIndicator={false}
         >
-          <Markdown style={markdownstyles}>
-            {filetext}
-          </Markdown>
+          <Markdown style={markdownstyles}>{filetext}</Markdown>
         </ScrollView>
       );
     }
