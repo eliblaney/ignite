@@ -361,6 +361,7 @@ export default class Community extends React.Component {
     const todayString = `${this.today.getFullYear()}-${month}-${day}`;
     const maxDateString = `${this.today.getFullYear() + 1}-${month}-${day}`;
 
+    /* TODO: Rewrite confirmation overlays with react-native-awesome-alerts */
     return (
       <ScrollView
         refreshControl={
@@ -651,7 +652,7 @@ export default class Community extends React.Component {
                 color: Colors.modalText,
               }}
             >
-              Are you sure you want to discard your post?
+              Are you sure you want to delete your post?
             </Text>
             <View style={{flexDirection: "row"}}>
               <Button
