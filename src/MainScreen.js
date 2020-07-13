@@ -56,7 +56,7 @@ export default class MainScreen extends React.PureComponent {
       );
     } else {
       return (
-        <Swiper>
+        <Swiper style={{backgroundColor: Colors.background}}>
           {communityComponent}
           {kindlingComponent}
           {reflectionsComponent}
