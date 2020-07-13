@@ -1,4 +1,5 @@
 import React from "react";
+import {AppState} from "react-native";
 import auth from "@react-native-firebase/auth";
 import Reactotron from "reactotron-react-native";
 import IgniteHelper from "./IgniteHelper";
@@ -17,11 +18,7 @@ export default class AuthController extends React.Component {
   constructor(props) {
     super(props);
 
-    this.today = new Date();
-    this.today.setHours(0);
-    this.today.setMinutes(0);
-    this.today.setSeconds(0);
-    this.today.setMilliseconds(0);
+    this.setToday();
 
     this.state = {
       loading: true,
@@ -35,6 +32,28 @@ export default class AuthController extends React.Component {
   }
 
   componentDidMount() {
+    AppState.addEventListener("change", state => {
+      if (state === "active") {
+        const date = new Date();
+        if (date.getDate() !== this.today.getDate()) {
+          this.setToday();
+          this.reauth();
+        }
+      }
+    });
+
+    this.beginAuth();
+  }
+
+  setToday = () => {
+    this.today = new Date();
+    this.today.setHours(0);
+    this.today.setMinutes(0);
+    this.today.setSeconds(0);
+    this.today.setMilliseconds(0);
+  };
+
+  beginAuth = () => {
     // entry -> is logged in?
     auth().onAuthStateChanged(async user => {
       if (user !== undefined && user !== null) {
@@ -44,7 +63,7 @@ export default class AuthController extends React.Component {
         this.setState({loading: false, auth: false, user: null});
       }
     });
-  }
+  };
 
   reauth = () => {
     // This is called when the retreat start date changes
