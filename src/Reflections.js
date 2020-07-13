@@ -2,7 +2,7 @@ import React from "react";
 import {StyleSheet, ScrollView, View, Text} from "react-native";
 import {default as VIcon} from "react-native-vector-icons/SimpleLineIcons";
 import LinearGradient from "react-native-linear-gradient";
-import Markdown from "react-native-simple-markdown";
+import Markdown from "react-native-markdown-display";
 import TrackPlayer from "react-native-track-player";
 import Colors from "./Colors";
 import ashWednesdays from "../config/AshWednsedays";
@@ -373,10 +373,8 @@ export default class Reflections extends React.Component {
         <View style={styles.readerContainer}>
           <ScrollView showVerticalScrollIndicator={false}>
             {sundayComponent}
-            <Text style={{marginBottom: 30}}>{suscipe}</Text>
-            <Markdown styles={markdownstyles} style={styles.maintext}>
-              {text}
-            </Markdown>
+            <Text style={{marginBottom: 10}}>{suscipe}</Text>
+            <Markdown style={markdownstyles}>{text}</Markdown>
             {audioComponent}
           </ScrollView>
         </View>
@@ -396,12 +394,8 @@ const styles = StyleSheet.create({
   readerContainer: {
     flex: 6,
     backgroundColor: Colors.background,
-    padding: 20, // maybe I should change this to margin to fix text getting cut off??
+    margin: 20,
     fontSize: 26,
-  },
-  maintext: {
-    marginBottom: 40,
-    color: Colors.primaryText,
   },
   sundayView: {
     backgroundColor: Colors.secondary,

@@ -1,6 +1,6 @@
 import React from "react";
 import {ScrollView, StyleSheet} from "react-native";
-import Markdown from "react-native-simple-markdown";
+import Markdown from "react-native-markdown-display";
 import {withNavigation} from "react-navigation";
 import markdownstyles from "../markdown-styles";
 import Colors from "./Colors";
@@ -54,7 +54,7 @@ export default withNavigation(
           style={styles.container}
           showVerticalScrollIndicator={false}
         >
-          <Markdown styles={markdownstyles} style={styles.maintext}>
+          <Markdown style={markdownstyles}>
             {filetext}
           </Markdown>
         </ScrollView>
@@ -69,9 +69,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     padding: 10,
     paddingRight: 20,
-    marginBottom: 40,
-  },
-  maintext: {
-    color: Colors.text,
+    paddingBottom: 40,
   },
 });
