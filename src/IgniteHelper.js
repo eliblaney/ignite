@@ -144,9 +144,8 @@ export default class IgniteHelper {
 
   // get movement from retreat day number
   static getMovement = day => {
-    switch (true) {
+    switch (day) {
       case day <= 0:
-      default:
         return 0;
       case day <= 11:
         return 1;
@@ -155,6 +154,7 @@ export default class IgniteHelper {
       case day <= 11 + 26 + 9:
         return 3;
       case day <= 11 + 26 + 9 + 5:
+      default:
         return 4;
     }
   };

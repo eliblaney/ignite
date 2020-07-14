@@ -41,7 +41,6 @@ export default class PostList extends React.Component {
 
     if (doRefresh && !this.refreshing && !loading) {
       this.refreshing = true;
-      refreshing(true);
       await this.read(true);
       refreshing(false);
       this.refreshing = false;

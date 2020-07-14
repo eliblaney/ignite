@@ -46,6 +46,9 @@ export default class Community extends React.Component {
       postDetailComponent: null,
       postDetailComponentCache: null,
       error: null,
+      refreshing: false,
+      refreshPosts: false,
+      refreshUsers: false,
     };
   }
 
@@ -56,19 +59,10 @@ export default class Community extends React.Component {
       "community",
       `action=geti&id=${community}`
     );
-    let {members} = c;
-    if (typeof members === "string") {
-      c.members = JSON.parse(c.members);
-      members = c.members;
-    }
-    const users = await Promise.all(
-      members.map(async m => {
-        const u = await IgniteHelper.getUser(m);
-        return u;
-      })
-    );
+    const users = await this.getUsers(c);
+
     // Because the creator of the community is the first member...
-    const isOwner = members[0] === uid;
+    const isOwner = users[0].uid === uid;
     let joinComponent;
     if (
       !startedAt &&
@@ -178,7 +172,7 @@ export default class Community extends React.Component {
         `action=post&uid=${uid}&date=${date}&day=${currentDay}&priv=${privacy}&data=${post}`
       );
 
-      this.setState({doRefresh: true});
+      this.setState({doRefresh: true, refreshing: true, refreshPosts: true});
     }
   };
 
@@ -260,8 +254,30 @@ export default class Community extends React.Component {
     });
   };
 
-  refreshing = set => {
-    this.setState({refreshing: set});
+  getUsers = async c => {
+    let refresh = false;
+    if (c === undefined || c === null) {
+      const {community} = this.props;
+      c = await IgniteHelper.api("community", `action=geti&id=${community}`);
+      refresh = true;
+    }
+
+    let {members} = c;
+    if (typeof members === "string") {
+      c.members = JSON.parse(c.members);
+      members = c.members;
+    }
+    const users = await Promise.all(
+      members.map(async m => {
+        const u = await IgniteHelper.getUser(m);
+        return u;
+      })
+    );
+    if (refresh) {
+      const {refreshPosts} = this.state;
+      this.setState({refreshing: refreshPosts, refreshUsers: false});
+    }
+    return users;
   };
 
   isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
@@ -283,6 +299,8 @@ export default class Community extends React.Component {
       loadMore,
       doRefresh,
       refreshing,
+      refreshUsers,
+      refreshPosts,
       users,
       pickDate,
       ashWednesday,
@@ -332,9 +350,11 @@ export default class Community extends React.Component {
           uid={uid}
           currentDay={currentDay}
           openPost={this.openPost}
-          doRefresh={doRefresh}
+          doRefresh={refreshPosts}
           loadMore={loadMore}
-          refreshing={this.refreshing}
+          refreshing={set =>
+            this.setState({refreshing: set || refreshUsers, refreshPosts: set})
+          }
         />
       );
     } else if (isOwner) {
@@ -370,7 +390,15 @@ export default class Community extends React.Component {
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
-            onRefresh={() => this.setState({doRefresh: true})}
+            onRefresh={() => {
+              this.setState({
+                doRefresh: true,
+                refreshPosts: startedAt,
+                refreshUsers: true,
+                refreshing: true,
+              });
+              this.getUsers(null);
+            }}
           />
         }
         onScroll={({nativeEvent}) => {
