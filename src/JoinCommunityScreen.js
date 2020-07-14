@@ -2,6 +2,7 @@ import React from "react";
 import {View, Text, StyleSheet} from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import {Button, Input, Icon} from "react-native-elements";
+import AwesomeAlert from "react-native-awesome-alerts";
 import Colors from "./Colors";
 import IgniteHelper from "./IgniteHelper";
 
@@ -14,8 +15,8 @@ export default class JoinCommunityScreen extends React.Component {
     super();
     this.state = {
       screen: 0, // 0: Welcome, 1: Find Community, 2: Create Community, 3: Confirm Join Community
-      inputShake: false,
       inputEditable: true,
+      error: null,
     };
   }
 
@@ -35,13 +36,12 @@ export default class JoinCommunityScreen extends React.Component {
         screen: 3,
         community,
         inputEditable: true,
-        inputShake: false,
       });
     } else {
       this.setState({
         screen: 1,
         inputEditable: true,
-        inputShake: false,
+        error: "Couldn't find community. Please try again.",
       });
     }
   };
@@ -51,6 +51,11 @@ export default class JoinCommunityScreen extends React.Component {
     const {onCommunity, uid} = this.props;
 
     if (community === undefined) {
+      this.setState({
+        screen: 2,
+        inputEditable: true,
+        error: "Invalid community",
+      });
       return;
     }
 
@@ -62,17 +67,28 @@ export default class JoinCommunityScreen extends React.Component {
     if (c.success === "1") {
       onCommunity(c.id);
     } else {
-      this.setState({
-        screen: 3,
-        inputEditable: true,
-        inputShake: true,
-      });
+      const errorCode = c.error;
+      if (errorCode === "42") {
+        // Too many members
+        this.setState({
+          screen: 2,
+          inputEditable: true,
+          error: "This community is full.",
+        });
+      } else {
+        // Other error
+        this.setState({
+          screen: 3,
+          inputEditable: true,
+          error: `Sorry, something went wrong. Please check your internet and try again. [Error ${errorCode}]`,
+        });
+      }
     }
   };
 
   createCommunity = async () => {
     const {communityName} = this.state;
-    const {reauth, uid} = this.props;
+    const {onCommunity, uid} = this.props;
 
     const cName = encodeURI(communityName);
     if (cName === undefined || cName.length === 0) {
@@ -80,17 +96,23 @@ export default class JoinCommunityScreen extends React.Component {
     }
     this.setState({inputEditable: false});
 
-    IgniteHelper.api("community", `action=init&name=${cName}&user=${uid}`);
-    // if (c.success === '1') {
-    // onCommunity(c.id);
-    reauth();
-    /* } else {
-			this.setState({screen: 2, inputEditable: true, inputShake: true});
-		} */
+    const c = await IgniteHelper.api(
+      "community",
+      `action=init&name=${cName}&user=${uid}`
+    );
+    if (c.success === "1") {
+      onCommunity(c.id);
+    } else {
+      this.setState({
+        screen: 2,
+        inputEditable: true,
+        error: `An error occurred when making your community. Please check your internet and try again. [Error ${c.error}]`,
+      });
+    }
   };
 
   render() {
-    const {screen, inputShake, inputEditable, community} = this.state;
+    const {screen, inputEditable, community, error} = this.state;
 
     switch (screen) {
       default:
@@ -128,13 +150,7 @@ export default class JoinCommunityScreen extends React.Component {
             colors={[Colors.primary, Colors.secondary]}
             style={[styles.container, styles.gradientBackground]}
           >
-            {inputShake && (
-              <Text style={[styles.outlineText, styles.errorText]}>
-                Sorry, no community was found. Try again?
-              </Text>
-            )}
             <Input
-              shake={inputShake}
               editable={inputEditable}
               autoCapitalize="characters"
               maxLength={6}
@@ -164,6 +180,19 @@ export default class JoinCommunityScreen extends React.Component {
               type="clear"
               titleStyle={{color: Colors.secondaryText}}
             />
+            <AwesomeAlert
+              show={error !== null && error !== undefined}
+              showProgress={false}
+              title="Error"
+              message={error}
+              closeOnTouchOutside={true}
+              closeOnHardwareBackPress={false}
+              showCancelButton={false}
+              showConfirmButton={true}
+              confirmText="Okay"
+              confirmButtonColor="#DD6B55"
+              onConfirmPressed={() => this.setState({error: null})}
+            />
           </LinearGradient>
         );
       case 2:
@@ -172,14 +201,7 @@ export default class JoinCommunityScreen extends React.Component {
             colors={[Colors.primary, Colors.secondary]}
             style={[styles.container, styles.gradientBackground]}
           >
-            {inputShake && (
-              <Text style={[styles.outlineText, styles.errorText]}>
-                Sorry, an error occurred. Please check your internet connection
-                and try again.
-              </Text>
-            )}
             <Input
-              shake={inputShake}
               editable={inputEditable}
               autoCapitalize="words"
               maxLength={32}
@@ -208,6 +230,19 @@ export default class JoinCommunityScreen extends React.Component {
               type="clear"
               titleStyle={{color: Colors.secondaryText}}
             />
+            <AwesomeAlert
+              show={error !== null && error !== undefined}
+              showProgress={false}
+              title="Error"
+              message={error}
+              closeOnTouchOutside={true}
+              closeOnHardwareBackPress={false}
+              showCancelButton={false}
+              showConfirmButton={true}
+              confirmText="Okay"
+              confirmButtonColor="#DD6B55"
+              onConfirmPressed={() => this.setState({error: null})}
+            />
           </LinearGradient>
         );
       case 3:
@@ -216,12 +251,6 @@ export default class JoinCommunityScreen extends React.Component {
             colors={[Colors.primary, Colors.secondary]}
             style={[styles.container, styles.gradientBackground]}
           >
-            {inputShake && (
-              <Text style={[styles.outlineText, styles.errorText]}>
-                Sorry, an error occurred. Please check your internet connection
-                and try again.
-              </Text>
-            )}
             <View style={styles.confirmCommunityView}>
               <Text style={styles.confirmTitle}>Confirm</Text>
               <Text style={styles.confirmDesc}>
@@ -246,6 +275,19 @@ export default class JoinCommunityScreen extends React.Component {
                 />
               </View>
             </View>
+            <AwesomeAlert
+              show={error !== null && error !== undefined}
+              showProgress={false}
+              title="Error"
+              message={error}
+              closeOnTouchOutside={true}
+              closeOnHardwareBackPress={false}
+              showCancelButton={false}
+              showConfirmButton={true}
+              confirmText="Okay"
+              confirmButtonColor="#DD6B55"
+              onConfirmPressed={() => this.setState({error: null})}
+            />
           </LinearGradient>
         );
     }
@@ -325,10 +367,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignItems: "center",
-  },
-  errorText: {
-    color: Colors.secondaryText,
-    marginTop: -75,
-    marginBottom: 50,
   },
 });
