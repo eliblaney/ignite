@@ -190,14 +190,18 @@ export default class IgniteHelper {
 
   static daysUntil = date => {
     // get today displayed as an ISO date
-    let todayDate = new Date();
+    const todayDate = new Date();
     const today = IgniteHelper.toISO(todayDate);
 
-    // consistent times & timezones
-    todayDate = new Date(`${today}T00:00:00Z`);
-    const compareDate = new Date(`${date}T00:00:00Z`);
+    return IgniteHelper.daysBetween(today, date);
+  };
 
-    const daysUntil = (compareDate - todayDate) / 1000 / 60 / 60 / 24;
+  static daysBetween = (from, to) => {
+    // consistent times & timezones
+    const fromDate = new Date(`${from}T00:00:00Z`);
+    const toDate = new Date(`${to}T00:00:00Z`);
+
+    const daysUntil = (toDate - fromDate) / 1000 / 60 / 60 / 24;
     return daysUntil;
   };
 }

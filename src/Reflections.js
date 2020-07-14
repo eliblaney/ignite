@@ -81,25 +81,12 @@ export default class Reflections extends React.Component {
       suscipeText = IgniteConfig.suscipe;
     }
 
-    // who even cares about the 2038 problem? ISO 8601 strings are wonderful
-    const startedAtDate = new Date(startedAt);
-    startedAtDate.setHours(0);
-    startedAtDate.setMinutes(0);
-    startedAtDate.setSeconds(0);
-    startedAtDate.setMilliseconds(0);
-
     // determine whether this is a Lenten retreat to set
     // the maximum length of the reflections
     let isLent = false;
     for (let i = 0; i < ashWednesdays.length; i++) {
       const aw = ashWednesdays[i];
-      let daw = new Date(aw);
-      daw = new Date(daw.getTime() + daw.getTimezoneOffset() * 60 * 1000);
-      if (
-        startedAtDate.getFullYear() === daw.getFullYear() &&
-        startedAtDate.getMonth() === daw.getMonth() &&
-        startedAtDate.getDate() === daw.getDate()
-      ) {
+      if (startedAt === aw) {
         isLent = true;
         break;
       }
@@ -108,7 +95,7 @@ export default class Reflections extends React.Component {
     this.setState({
       lang,
       faith,
-      startedAt: startedAtDate,
+      startedAt,
       isOwner,
       isLent,
       splashText: this.splashText(),
@@ -116,26 +103,23 @@ export default class Reflections extends React.Component {
     });
 
     let date = new Date();
-    date.setHours(0);
-    date.setMinutes(0);
-    date.setSeconds(0);
-    date.setMilliseconds(0);
 
     const day = this.getDay(date);
+
     if (!isLent && day > 40) {
       // if it's a normal 40-day retreat, the last date
-      // that exists is 39 days after the first day
-      date = new Date(startedAtDate.toISOString());
-      date.setDate(date.getDate() + 39);
+      // that exists is day 40
+      date = new Date(`${startedAt}T00:00:00`);
+      date.setDate(date.getDate() + 40);
     } else if (day > 51) {
       // if it's a Lenten 51-day retreat, the last date
-      // that exists is 50 days after the first day
-      date = new Date(startedAtDate.toISOString());
-      date.setDate(date.getDate() + 50);
+      // that exists is day 51
+      date = new Date(`${startedAt}T00:00:00`);
+      date.setDate(date.getDate() + 51);
     }
     if (day < 1) {
       // and if somehow this happens...
-      date = startedAtDate;
+      date = new Date(`${startedAt}T00:00:00`);
     }
 
     this.updateContent(date);
@@ -152,12 +136,11 @@ export default class Reflections extends React.Component {
 
   getDay = date => {
     // day refers to the current day of the retreat (1, 2, 3, etc)
-    // we obtain this value by subtracting the starting date from the
-    // target date and converting from milliseconds to days
     const {startedAt} = this.state;
 
-    const day = parseInt((date - startedAt) / 1000 / 60 / 60 / 24, 10);
-    return day;
+    date = IgniteHelper.toISO(date);
+
+    return IgniteHelper.daysBetween(startedAt, date) + 1;
   };
 
   updateContent = date => {
@@ -325,7 +308,6 @@ export default class Reflections extends React.Component {
           <ReflectionNavigation
             title={dateString}
             isLent={isLent}
-            startedAt={startedAt}
             date={date}
             day={day}
             onChange={this.updateContent}
@@ -365,7 +347,6 @@ export default class Reflections extends React.Component {
         <ReflectionNavigation
           title={dateString}
           isLent={isLent}
-          startedAt={startedAt}
           date={date}
           day={day}
           onChange={this.updateContent}
