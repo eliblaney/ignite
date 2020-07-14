@@ -24,7 +24,7 @@ import LoadingScreen from "./LoadingScreen";
 import UserList from "./UserList";
 import PostList from "./PostList";
 import Header from "./Header";
-import ashWednesdays from "../config/AshWednsedays";
+import ashWednesdays from "../config/AshWednesdays";
 
 export default class Community extends React.Component {
   constructor(props) {

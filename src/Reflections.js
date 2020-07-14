@@ -5,7 +5,7 @@ import LinearGradient from "react-native-linear-gradient";
 import Markdown from "react-native-markdown-display";
 import TrackPlayer from "react-native-track-player";
 import Colors from "./Colors";
-import ashWednesdays from "../config/AshWednsedays";
+import ashWednesdays from "../config/AshWednesdays";
 import markdownstyles from "./markdown-styles";
 
 import LoadingScreen from "./LoadingScreen";
