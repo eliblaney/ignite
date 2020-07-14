@@ -17,13 +17,14 @@ import {
   Tooltip,
 } from "react-native-elements";
 import DatePicker from "react-native-datepicker";
+import AwesomeAlert from "react-native-awesome-alerts";
 import IgniteHelper from "./IgniteHelper";
 import Colors from "./Colors";
 import LoadingScreen from "./LoadingScreen";
 import UserList from "./UserList";
 import PostList from "./PostList";
 import Header from "./Header";
-import ashWednesdays from "../config/AshWednsedays";
+import ashWednesdays from "../config/AshWednesdays";
 
 export default class Community extends React.Component {
   constructor(props) {
@@ -44,6 +45,7 @@ export default class Community extends React.Component {
       chosenStartDate: null,
       postDetailComponent: null,
       postDetailComponentCache: null,
+      error: null,
     };
   }
 
@@ -292,6 +294,7 @@ export default class Community extends React.Component {
       deletePost,
       postDetailComponent,
       postDetailComponentCache,
+      error,
     } = this.state;
     const {startedAt, currentDay, daysUntil, uid, reauth} = this.props;
 
@@ -449,7 +452,7 @@ export default class Community extends React.Component {
               <Button
                 onPress={async () => {
                   const startDate = chosenStartDate;
-                  await IgniteHelper.api(
+                  const result = await IgniteHelper.api(
                     "community",
                     /* eslint-disable react/destructuring-assignment */
                     `action=ignite&id=${encodeURI(
@@ -457,8 +460,33 @@ export default class Community extends React.Component {
                     )}&start=${encodeURI(startDate)}`
                     /* eslint-enable react/destructuring-assignment */
                   );
-                  this.setState({pickDate: false});
-                  reauth();
+                  const {success} = result;
+                  if (success === "1") {
+                    this.setState({pickDate: false});
+                    reauth();
+                  } else {
+                    const errorCode = result.error;
+                    if (errorCode === "41") {
+                      // Not enough members in community
+                      this.setState({
+                        pickDate: false,
+                        error: "You need at least 4 members in your community.",
+                      });
+                    } else if (errorCode === "43") {
+                      // Too many members
+                      this.setState({
+                        pickDate: false,
+                        error:
+                          "You can only have up to 10 members in your community.",
+                      });
+                    } else {
+                      // Other error
+                      this.setState({
+                        pickDate: false,
+                        error: `Sorry, something went wrong. Please try again. [Error ${errorCode}]`,
+                      });
+                    }
+                  }
                 }}
                 title="Confirm"
                 type="solid"
@@ -686,6 +714,19 @@ export default class Community extends React.Component {
           </View>
         </Overlay>
         {postDetailComponent}
+        <AwesomeAlert
+          show={error !== null && error !== undefined}
+          showProgress={false}
+          title="Error"
+          message={error}
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={false}
+          showConfirmButton={true}
+          confirmText="Okay"
+          confirmButtonColor="#DD6B55"
+          onConfirmPressed={() => this.setState({error: null})}
+        />
       </ScrollView>
     );
   }

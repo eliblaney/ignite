@@ -18,8 +18,13 @@ export default class IgniteHelper {
       headers,
       body,
     }).catch(error => Reactotron.error(error));
-    const data = await result.json();
-    return data;
+    try {
+      const data = await result.json();
+      return data;
+    } catch {
+      // Default error case
+      return {success: "0", error: "998"};
+    }
   }
 
   static async getUser(uid) {
