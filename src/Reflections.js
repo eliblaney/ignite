@@ -222,6 +222,33 @@ export default class Reflections extends React.Component {
     return splashes[Math.floor(Math.random() * splashes.length)];
   };
 
+  parseSymbols = text => {
+    const options = {
+      promptSuscipe: {
+        enabled: false,
+      },
+      promptFasts: {
+        enabled: false,
+      },
+    };
+    let audioTranscript = null;
+
+    // Optionally disable specified attributes
+    Object.keys(options).forEach(k => {
+      const pattern = new RegExp(`^\\#\\[${k}\\s*(.*)\\]$`, "m");
+      if (pattern.test(text)) {
+        const args = pattern.exec(text);
+        options[k].enabled = args[1] !== "disabled";
+      }
+    });
+
+    // Remove all attributes
+    let markdownText = text.replace(/^#\[.*\]$/gm, "");
+    // TODO: Remove [audio]transcript text[/audio] and convert markdownText to array if necessary
+
+    return {markdownText, audioTranscript, options};
+  };
+
   render() {
     const {
       loading,
@@ -319,6 +346,11 @@ export default class Reflections extends React.Component {
       );
     }
 
+    const {markdownText, audioTranscript, options} = this.parseSymbols(text);
+    const {promptSuscipe, promptFasts} = options;
+    // TODO: Implement promptSuscipe, promptFasts AwesomeAlerts
+    // TODO: Implement movable audio component and audio transcript
+
     let sundayComponent;
     if (isSunday) {
       sundayComponent = (
@@ -355,7 +387,7 @@ export default class Reflections extends React.Component {
           <ScrollView showVerticalScrollIndicator={false}>
             {sundayComponent}
             <Text style={{marginBottom: 10}}>{suscipe}</Text>
-            <Markdown style={markdownstyles}>{text}</Markdown>
+            <Markdown style={markdownstyles}>{markdownText}</Markdown>
             {audioComponent}
           </ScrollView>
         </View>
