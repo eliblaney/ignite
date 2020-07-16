@@ -233,7 +233,7 @@ export default class Reflections extends React.Component {
     };
     let audioTranscript = null;
 
-    // Optionally disable specified attributes
+    // Enable/disable specified attributes
     Object.keys(options).forEach(k => {
       const pattern = new RegExp(`^\\#\\[${k}\\s*(.*)\\]$`, "m");
       if (pattern.test(text)) {
@@ -244,7 +244,15 @@ export default class Reflections extends React.Component {
 
     // Remove all attributes
     let markdownText = text.replace(/^#\[.*\]$/gm, "");
-    // TODO: Remove [audio]transcript text[/audio] and convert markdownText to array if necessary
+
+    // Parse audio transcript
+    const audioPattern = /\[audio\]([\s\S]*?)\[\/audio\]/m;
+    if (audioPattern.test(markdownText)) {
+      const args = audioPattern.exec(markdownText);
+      [, audioTranscript] = args;
+      markdownText = markdownText.split(audioPattern);
+      markdownText.splice(1, 1);
+    }
 
     return {markdownText, audioTranscript, options};
   };
@@ -349,7 +357,12 @@ export default class Reflections extends React.Component {
     const {markdownText, audioTranscript, options} = this.parseSymbols(text);
     const {promptSuscipe, promptFasts} = options;
     // TODO: Implement promptSuscipe, promptFasts AwesomeAlerts
-    // TODO: Implement movable audio component and audio transcript
+
+    let reflectionText = markdownText;
+    if (typeof reflectionText !== "string") {
+      // TODO Implement audio component + transcript in this location
+      reflectionText = markdownText.join("\nAUDIO COMPONENT GOES HERE\n");
+    }
 
     let sundayComponent;
     if (isSunday) {
@@ -387,7 +400,7 @@ export default class Reflections extends React.Component {
           <ScrollView showVerticalScrollIndicator={false}>
             {sundayComponent}
             <Text style={{marginBottom: 10}}>{suscipe}</Text>
-            <Markdown style={markdownstyles}>{markdownText}</Markdown>
+            <Markdown style={markdownstyles}>{reflectionText}</Markdown>
             {audioComponent}
           </ScrollView>
         </View>
