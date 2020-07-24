@@ -4,15 +4,16 @@ import {default as VIcon} from "react-native-vector-icons/SimpleLineIcons";
 import LinearGradient from "react-native-linear-gradient";
 import Markdown from "react-native-markdown-display";
 import TrackPlayer from "react-native-track-player";
-import Colors from "./Colors";
-import ashWednesdays from "../config/AshWednesdays";
-import markdownstyles from "./markdown-styles";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 import LoadingScreen from "./LoadingScreen";
 import IgniteConfig from "../config/IgniteConfig";
 import IgniteHelper from "./IgniteHelper";
 import ReflectionNavigation from "./ReflectionNavigation";
 import AudioPlayer from "./AudioPlayer";
+import Colors from "./Colors";
+import ashWednesdays from "../config/AshWednesdays";
+import markdownstyles from "./markdown-styles";
 
 export default class Reflections extends React.Component {
   constructor(props) {
@@ -24,6 +25,8 @@ export default class Reflections extends React.Component {
       splashText: "",
       suscipe: "",
       refreshing: true,
+      reflectionIsToday: true,
+      showPromptMessage: true,
     };
 
     // I dream of the day when JS Date will finally know the months of the year
@@ -43,6 +46,8 @@ export default class Reflections extends React.Component {
     ];
     // it would be nice if it knew weekdays too
     this.weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+    this.today = IgniteHelper.toISO(new Date());
   }
 
   // figures out whether the user has started yet and where in the retreat they are based on the day of the week
@@ -147,8 +152,9 @@ export default class Reflections extends React.Component {
     const {lang, faith} = this.state;
     const day = this.getDay(date);
     const isSunday = date.getDay() === 0;
+    const reflectionIsToday = IgniteHelper.toISO(date) === this.today;
 
-    this.setState({date, isSunday});
+    this.setState({date, isSunday, reflectionIsToday});
 
     this.getContent(day, lang, faith);
   };
@@ -223,11 +229,16 @@ export default class Reflections extends React.Component {
   };
 
   parseSymbols = text => {
+    text = `#[promptSuscipe]\n${text}`;
     const options = {
       promptSuscipe: {
+        header: "Suscipe",
+        text: "Today, try customizing your suscipe prayer!",
         enabled: false,
       },
       promptFasts: {
+        header: "Choose Fasts",
+        text: "Let's try choosing your fasts today!",
         enabled: false,
       },
     };
@@ -270,6 +281,8 @@ export default class Reflections extends React.Component {
       suscipe,
       text,
       refreshing,
+      showPromptMessage,
+      reflectionIsToday,
     } = this.state;
     const {startedAt, daysUntil} = this.props;
 
@@ -355,8 +368,16 @@ export default class Reflections extends React.Component {
     }
 
     const {markdownText, audioTranscript, options} = this.parseSymbols(text);
-    const {promptSuscipe, promptFasts} = options;
-    // TODO: Implement promptSuscipe, promptFasts AwesomeAlerts
+    let {promptSuscipe, promptFasts} = options;
+    promptSuscipe =
+      showPromptMessage && promptSuscipe.enabled && reflectionIsToday
+        ? promptSuscipe
+        : false;
+    promptFasts =
+      showPromptMessage && promptFasts.enabled && reflectionIsToday
+        ? promptFasts
+        : false;
+    const promptMessage = promptSuscipe || promptFasts;
 
     let reflectionText = markdownText;
     if (typeof reflectionText !== "string") {
@@ -404,6 +425,22 @@ export default class Reflections extends React.Component {
             {audioComponent}
           </ScrollView>
         </View>
+        <AwesomeAlert
+          show={reflectionText !== null && promptMessage}
+          showProgress={false}
+          title={promptMessage.header}
+          message={promptMessage.text}
+          closeOnTouchOutside={false}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="Maybe Later"
+          cancelButtonColor="#676767"
+          onCancelPressed={() => this.setState({showPromptMessage: false})}
+          confirmText="Sure!"
+          confirmButtonColor="#229944"
+          onConfirmPressed={() => this.setState({showPromptMessage: false})}
+        />
       </View>
     );
   }
