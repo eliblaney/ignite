@@ -44,24 +44,17 @@ export default class MainScreen extends React.PureComponent {
       />
     );
 
-    if (age < 2) {
-      // if it's their first time opening the app, show the
-      // tutorial message on the reflections screen
-      return (
-        <Swiper style={{backgroundColor: Colors.background}}>
-          {reflectionsComponent}
-          {communityComponent}
-          {kindlingComponent}
-        </Swiper>
-      );
-    } else {
-      return (
-        <Swiper style={{backgroundColor: Colors.background}}>
-          {communityComponent}
-          {kindlingComponent}
-          {reflectionsComponent}
-        </Swiper>
-      );
-    }
+    // if it's their first time opening the app, show the
+    // tutorial message on the reflections screen
+    return (
+      <Swiper
+        index={age < 2 ? 0 : 1}
+        style={{backgroundColor: Colors.background}}
+      >
+        {reflectionsComponent}
+        {communityComponent}
+        {kindlingComponent}
+      </Swiper>
+    );
   }
 }
