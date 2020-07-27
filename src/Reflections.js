@@ -91,6 +91,9 @@ export default class Reflections extends React.Component {
         break;
       }
     }
+    // TODO: Choose which reflections to remove from the non-Lent version
+    // Until then, everyone has to use the Lent version
+    isLent = true;
 
     this.setState({
       lang,
