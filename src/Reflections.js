@@ -255,6 +255,7 @@ export default withNavigation(
           header: "Choose Fasts",
           text: "Let's try choosing your fasts today!",
           enabled: false,
+          // TODO: Implement the ability to choose/view fasts
           onConfirm: () => {},
         },
       };
@@ -270,18 +271,24 @@ export default withNavigation(
       });
 
       // Remove all attributes
-      let markdownText = text.replace(/^#\[.*\]$/gm, "");
+      let reflectionText = text.replace(/^#\[.*\]$/gm, "");
 
       // Parse audio transcript
       const audioPattern = /\[audio\]([\s\S]*?)\[\/audio\]/m;
-      if (audioPattern.test(markdownText)) {
-        const args = audioPattern.exec(markdownText);
+      if (audioPattern.test(reflectionText)) {
+        const args = audioPattern.exec(reflectionText);
+        // group 0: [audio]audioTranscript[/audio]
+        // group 1: audioTranscript
+        // Ignore group 0, we just need the inner text
         [, audioTranscript] = args;
-        markdownText = markdownText.split(audioPattern);
-        markdownText.splice(1, 1);
+        reflectionText = reflectionText.split(audioPattern);
+        reflectionText.splice(1, 1);
+      } else {
+        // Transform into a single element array to avoid multiple types
+        reflectionText = [reflectionText];
       }
 
-      return {markdownText, audioTranscript, options};
+      return {reflectionText, audioTranscript, options};
     };
 
     render() {
@@ -387,7 +394,9 @@ export default withNavigation(
         this.setState({suscipe: updateSuscipe});
       }
 
-      const {markdownText, audioTranscript, options} = this.parseSymbols(text);
+      const {reflectionText, audioTranscript, options} = this.parseSymbols(
+        text
+      );
       let {promptSuscipe, promptFasts} = options;
       promptSuscipe =
         showPromptMessage &&
@@ -401,12 +410,6 @@ export default withNavigation(
           ? promptFasts
           : false;
       const promptMessage = promptSuscipe || promptFasts;
-
-      let reflectionText = markdownText;
-      if (typeof reflectionText !== "string") {
-        // TODO Implement audio component + transcript in this location
-        reflectionText = markdownText.join("\nAUDIO COMPONENT GOES HERE\n");
-      }
 
       let sundayComponent;
       if (isSunday) {
@@ -427,6 +430,7 @@ export default withNavigation(
           <AudioPlayer
             playPause={this.playPause}
             createTrackPlayer={this.createTrackPlayer}
+            audioTranscript={audioTranscript}
           />
         );
       }
@@ -444,8 +448,14 @@ export default withNavigation(
             <ScrollView showVerticalScrollIndicator={false}>
               {sundayComponent}
               <Text style={{marginBottom: 10}}>{suscipe}</Text>
-              <Markdown style={markdownstyles}>{reflectionText}</Markdown>
-              {audioComponent}
+              {reflectionText.map((textSegment, index) => (
+                // Render audio component in place of [audio][/audio] tags
+                // reflectionText is an array split at that index
+                <View key={index.toString()}>
+                  {index > 0 && audioComponent}
+                  <Markdown style={markdownstyles}>{textSegment}</Markdown>
+                </View>
+              ))}
             </ScrollView>
           </View>
           <AwesomeAlert
