@@ -383,6 +383,10 @@ export default withNavigation(
         );
       }
 
+      if (updateSuscipe && updateSuscipe !== suscipe) {
+        this.setState({suscipe: updateSuscipe});
+      }
+
       const {markdownText, audioTranscript, options} = this.parseSymbols(text);
       let {promptSuscipe, promptFasts} = options;
       promptSuscipe =
