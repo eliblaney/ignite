@@ -29,7 +29,7 @@ export default withNavigation(
     };
 
     createCustom = (title, navLocation) => {
-      const {navigation, uid, logout} = this.props;
+      const {navigation, uid, logout, setSuscipe} = this.props;
 
       const item = (
         <SettingsList.Item
@@ -41,6 +41,7 @@ export default withNavigation(
             navigation.push(navLocation, {
               uid,
               logout,
+              setSuscipe,
             })
           }
         />

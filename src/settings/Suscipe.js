@@ -20,7 +20,8 @@ export default withNavigation(
 
       const {navigation} = this.props;
       const {params} = navigation.state;
-      this.state = {uid: params.uid, suscipe: IgniteConfig.suscipe};
+      this.setSuscipe = params.setSuscipe;
+      this.state = {uid: params.uid, suscipe: ""};
     }
 
     async componentDidMount() {
@@ -35,9 +36,21 @@ export default withNavigation(
       }
     }
 
-    render() {
-      const {suscipe, uid} = this.state;
+    pushSuscipe = async suscipeText => {
+      const {uid} = this.state;
       const {navigation} = this.props;
+      await IgniteHelper.api(
+        "user",
+        `action=susc&uid=${encodeURI(uid)}&data=${encodeURI(
+          IgniteHelper.encrypt(suscipeText, true)
+        )}`
+      );
+      this.setSuscipe(suscipeText);
+      navigation.goBack();
+    };
+
+    render() {
+      const {suscipe} = this.state;
 
       return (
         <View style={{flex: 1, flexDirection: "column"}}>
@@ -59,18 +72,19 @@ export default withNavigation(
               if (!suscipe || suscipe.length < 1) {
                 suscipeText = IgniteConfig.suscipe;
               }
-              await IgniteHelper.api(
-                "user",
-                `action=susc&uid=${encodeURI(uid)}&data=${encodeURI(
-                  IgniteHelper.encrypt(suscipeText, true)
-                )}`
-              );
-              navigation.pop();
+              this.pushSuscipe(suscipeText);
             }}
             title="Save"
             type="solid"
             titleStyle={{fontSize: 16}}
             buttonStyle={{margin: 10, backgroundColor: "#228822"}}
+          />
+          <Button
+            onPress={async () => this.pushSuscipe(IgniteConfig.suscipe)}
+            title="Reset"
+            type="solid"
+            titleStyle={{fontSize: 16}}
+            buttonStyle={{margin: 10, backgroundColor: "#888888"}}
           />
         </View>
       );
