@@ -11,6 +11,15 @@ export default class MainScreen extends React.PureComponent {
     return {headerShown: false};
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      updateSuscipe: false,
+    };
+  }
+
+  setSuscipe = x => this.setState({updateSuscipe: x});
+
   render() {
     const {
       reauth,
@@ -23,6 +32,7 @@ export default class MainScreen extends React.PureComponent {
       user,
       age,
     } = this.props;
+    const {updateSuscipe} = this.state;
 
     const communityComponent = (
       <Community
@@ -34,13 +44,17 @@ export default class MainScreen extends React.PureComponent {
         startedAt={started ? startedAt : false}
       />
     );
-    const kindlingComponent = <Kindling logout={logout} uid={user.uid} />;
+    const kindlingComponent = (
+      <Kindling logout={logout} uid={user.uid} setSuscipe={this.setSuscipe} />
+    );
     const reflectionsComponent = (
       <Reflections
         uid={user.uid}
         community={community}
         startedAt={started ? startedAt : false}
         daysUntil={daysUntil}
+        updateSuscipe={updateSuscipe}
+        setSuscipe={this.setSuscipe}
       />
     );
 

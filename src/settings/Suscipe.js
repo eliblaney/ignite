@@ -20,6 +20,7 @@ export default withNavigation(
 
       const {navigation} = this.props;
       const {params} = navigation.state;
+      this.setSuscipe = params.setSuscipe;
       this.state = {uid: params.uid, suscipe: IgniteConfig.suscipe};
     }
 
@@ -61,10 +62,9 @@ export default withNavigation(
               }
               await IgniteHelper.api(
                 "user",
-                `action=susc&uid=${encodeURI(uid)}&data=${encodeURI(
-                  IgniteHelper.encrypt(suscipeText, true)
-                )}`
+                `action=susc&uid=${encodeURI(uid)}&data=${encodeURI(IgniteHelper.encrypt(suscipeText, true))}`
               );
+              this.setSuscipe(suscipeText);
               navigation.pop();
             }}
             title="Save"
