@@ -231,17 +231,31 @@ export default withNavigation(
     };
 
     parseSymbols = text => {
-      text = `#[promptSuscipe]\n${text}`;
+      const {navigation, uid, setSuscipe} = this.props;
+
       const options = {
         promptSuscipe: {
           header: "Suscipe",
           text: "Today, try customizing your suscipe prayer!",
           enabled: false,
+          onConfirm: () => {
+            navigation.push("suscipe", {
+              uid,
+              setSuscipe: suscipeText => {
+                this.setState({
+                  showPromptMessage: false,
+                  suscipe: suscipeText,
+                });
+                setSuscipe(suscipeText);
+              },
+            });
+          },
         },
         promptFasts: {
           header: "Choose Fasts",
           text: "Let's try choosing your fasts today!",
           enabled: false,
+          onConfirm: () => {},
         },
       };
       let audioTranscript = null;
@@ -286,14 +300,7 @@ export default withNavigation(
         showPromptMessage,
         reflectionIsToday,
       } = this.state;
-      const {
-        startedAt,
-        daysUntil,
-        navigation,
-        uid,
-        setSuscipe,
-        updateSuscipe,
-      } = this.props;
+      const {startedAt, daysUntil, updateSuscipe} = this.props;
 
       if (loading) {
         return <LoadingScreen />;
@@ -453,16 +460,7 @@ export default withNavigation(
             confirmButtonColor="#229944"
             onConfirmPressed={() => {
               this.setState({showPromptMessage: false});
-              navigation.push("suscipe", {
-                uid,
-                setSuscipe: suscipeText => {
-                  this.setState({
-                    showPromptMessage: false,
-                    suscipe: suscipeText,
-                  });
-                  setSuscipe(suscipeText);
-                },
-              });
+              promptMessage.onConfirm();
             }}
           />
         </View>
