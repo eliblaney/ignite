@@ -131,9 +131,10 @@ export default withNavigation(
 
       this.updateContent(date);
     }
+
     // TODO: Choose which reflections to remove from the non-Lent version
     // Until then, everyone has to use the Lent version
-    isLent = true;
+    // isLent = true;
 
     shouldComponentUpdate(nextProps, nextState) {
       // we don't need to re-render while we're loading data
