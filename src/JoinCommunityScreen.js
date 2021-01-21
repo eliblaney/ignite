@@ -1,7 +1,7 @@
 import React from "react";
 import {View, Text, StyleSheet} from "react-native";
 import LinearGradient from "react-native-linear-gradient";
-import {Button, Input, Icon} from "react-native-elements";
+import {Button, Input, Icon, CheckBox} from "react-native-elements";
 import AwesomeAlert from "react-native-awesome-alerts";
 import Colors from "./Colors";
 import IgniteHelper from "./IgniteHelper";
@@ -17,6 +17,8 @@ export default class JoinCommunityScreen extends React.Component {
       screen: 0, // 0: Welcome, 1: Find Community, 2: Create Community, 3: Confirm Join Community
       inputEditable: true,
       error: null,
+      publicChecked: false,
+      showConfirmMatch: false,
     };
   }
 
@@ -48,7 +50,6 @@ export default class JoinCommunityScreen extends React.Component {
 
   joinCommunity = async () => {
     const {community} = this.state;
-    const {onCommunity, uid} = this.props;
 
     if (community === undefined) {
       this.setState({
@@ -59,15 +60,8 @@ export default class JoinCommunityScreen extends React.Component {
       return;
     }
 
-    const c = await IgniteHelper.api(
-      "community",
-      `action=join&id=${community.id}&user=${uid}`
-    );
-
-    if (c.success === "1") {
-      onCommunity(c.id);
-    } else {
-      const errorCode = c.error;
+    const errorCode = await this.doJoinCommunity(community);
+    if (errorCode) {
       if (errorCode === "42") {
         // Too many members
         this.setState({
@@ -86,14 +80,39 @@ export default class JoinCommunityScreen extends React.Component {
     }
   };
 
-  createCommunity = async () => {
-    const {communityName} = this.state;
+  doJoinCommunity = async community => {
     const {onCommunity, uid} = this.props;
 
-    const cName = encodeURI(communityName);
-    if (cName === undefined || cName.length === 0) {
+    const c = await IgniteHelper.api(
+      "community",
+      `action=join&id=${community.id}&user=${uid}`
+    );
+
+    if (c.success === "1") {
+      onCommunity(c.id);
+      return 0;
+    } else {
+      const errorCode = c.error;
+      return errorCode;
+    }
+  };
+
+  createCommunity = async () => {
+    const {communityName, publicChecked} = this.state;
+    const {onCommunity, uid} = this.props;
+
+    let cName = encodeURI(communityName);
+    if (cName === undefined || cName === "undefined" || cName.length === 0) {
       return;
     }
+
+    // Encode whether the community is public or not
+    if (publicChecked) {
+      cName = `P${cName}`;
+    } else {
+      cName = `R${cName}`;
+    }
+
     this.setState({inputEditable: false});
 
     const c = await IgniteHelper.api(
@@ -111,8 +130,42 @@ export default class JoinCommunityScreen extends React.Component {
     }
   };
 
+  selectSuitableCommunity = cs => {
+    // TODO: More intelligent matching algorithm
+    return cs[Math.floor(Math.random() * cs.length)];
+  };
+
+  findMatch = async () => {
+    const communities = await IgniteHelper.api("community", "action=getp");
+    if (communities.success === "1" && communities.num > 0) {
+      const c = this.selectSuitableCommunity(communities.communities);
+      this.setState({
+        showConfirmMatch: false,
+      });
+      const errorCode = await this.doJoinCommunity(c);
+      if (errorCode) {
+        this.setState({
+          showConfirmMatch: false,
+          error: `Sorry, something went wrong. Please check your internet and try again. [Error ${errorCode}]`,
+        });
+      }
+    } else {
+      this.setState({
+        showConfirmMatch: false,
+        error: "There were no available communities :(",
+      });
+    }
+  };
+
   render() {
-    const {screen, inputEditable, community, error} = this.state;
+    const {
+      screen,
+      inputEditable,
+      community,
+      error,
+      publicChecked,
+      showConfirmMatch,
+    } = this.state;
 
     switch (screen) {
       default:
@@ -133,6 +186,14 @@ export default class JoinCommunityScreen extends React.Component {
               type="solid"
               buttonStyle={styles.solidButton}
             />
+            <Text style={styles.smalltext}>Don&apos;t know who to join?</Text>
+            <Button
+              onPress={() => this.setState({showConfirmMatch: true})}
+              raised
+              title="Match Me!"
+              type="solid"
+              buttonStyle={styles.solidButton}
+            />
             <Text style={styles.smalltext}>First one in your group?</Text>
             <Button
               onPress={() => this.setState({screen: 2})}
@@ -141,6 +202,34 @@ export default class JoinCommunityScreen extends React.Component {
               type="outline"
               titleStyle={styles.outlineText}
               buttonStyle={styles.outlineButton}
+            />
+            <AwesomeAlert
+              show={showConfirmMatch}
+              showProgress={false}
+              title="Find Match"
+              message="This will pair you up with a compatible community. Is that okay?"
+              closeOnTouchOutside={true}
+              closeOnHardwareBackPress={false}
+              showCancelButton={true}
+              showConfirmButton={true}
+              confirmText="Okay"
+              confirmButtonColor="#DD6B55"
+              cancelButtonColor={Colors.fadedText}
+              onConfirmPressed={() => this.findMatch()}
+              onCancelPressed={() => this.setState({showConfirmMatch: false})}
+            />
+            <AwesomeAlert
+              show={error !== null && error !== undefined}
+              showProgress={false}
+              title="Error"
+              message={error}
+              closeOnTouchOutside={true}
+              closeOnHardwareBackPress={false}
+              showCancelButton={false}
+              showConfirmButton={true}
+              confirmText="Okay"
+              confirmButtonColor="#DD6B55"
+              onConfirmPressed={() => this.setState({error: null})}
             />
           </LinearGradient>
         );
@@ -216,6 +305,17 @@ export default class JoinCommunityScreen extends React.Component {
               }
               containerStyle={styles.inputStyle}
               inputStyle={styles.inputTextStyle}
+            />
+            <CheckBox
+              center
+              editable={inputEditable}
+              title="Public"
+              containerStyle={styles.checkStyle}
+              textStyle={styles.inputTextStyle}
+              checkedColor={Colors.secondaryText}
+              uncheckedColor={Colors.secondaryText}
+              checked={publicChecked}
+              onPress={() => this.setState({publicChecked: !publicChecked})}
             />
             <Button
               onPress={this.createCommunity}
@@ -315,7 +415,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     marginTop: 10,
-    marginBottom: 100,
+    marginBottom: 30,
   },
   smalltext: {
     color: Colors.secondaryText,
@@ -336,7 +436,13 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     width: 250,
+    marginBottom: 10,
+  },
+  checkStyle: {
+    width: 250,
     marginBottom: 30,
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    borderColor: "rgba(0, 0, 0, 0)",
   },
   inputTextStyle: {
     color: Colors.primaryText,
