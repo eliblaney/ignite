@@ -419,13 +419,15 @@ export default withNavigation(
       const promptMessage = promptSuscipe || promptFasts;
 
       let sundayComponent;
-      if (isSunday) {
+      // Breaking fast occurs on Sundays after the first movement
+      // During the first movement, there are no fasts to break
+      if (isSunday && IgniteHelper.getMovement(day) > 1) {
         sundayComponent = (
           <View style={styles.sundayView}>
             <Text style={styles.sundayTitle}>🎉It&apos;s Sunday!🎉</Text>
             <Text style={styles.sundayText}>
               Just for today, you can break your fast. You should still keep
-              adhering to the principles of silence.
+              adhering to the group practices.
             </Text>
           </View>
         );
