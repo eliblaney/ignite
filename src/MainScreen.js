@@ -28,7 +28,6 @@ export default class MainScreen extends React.PureComponent {
       daysUntil,
       started,
       startedAt,
-      logout,
       user,
       age,
     } = this.props;
@@ -45,7 +44,7 @@ export default class MainScreen extends React.PureComponent {
       />
     );
     const kindlingComponent = (
-      <Kindling logout={logout} uid={user.uid} setSuscipe={this.setSuscipe} />
+      <Kindling reauth={reauth} uid={user.uid} setSuscipe={this.setSuscipe} />
     );
     const reflectionsComponent = (
       <Reflections

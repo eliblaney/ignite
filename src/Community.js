@@ -358,9 +358,13 @@ export default class Community extends React.Component {
         />
       );
     } else if (isOwner) {
+      let buttonText = "Choose retreat start date";
+      if (daysUntil > 0) {
+        buttonText = "Change retreat start date";
+      }
       startButton = (
         <Button
-          title="Choose retreat start date"
+          title={buttonText}
           type="solid"
           onPress={() => this.setState({pickDate: true})}
           style={{width: "100%", marginBottom: 10}}

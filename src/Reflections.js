@@ -275,6 +275,9 @@ export default withNavigation(
       });
 
       // Remove all attributes
+      if (text === undefined) {
+        text = "No reflection today. Enjoy a quick break!";
+      }
       let reflectionText = text.replace(/^#\[.*\]$/gm, "");
 
       // Parse audio transcript

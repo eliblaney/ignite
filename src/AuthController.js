@@ -24,6 +24,7 @@ export default class AuthController extends React.Component {
       loading: true,
       auth: false,
       user: null,
+      community: undefined,
       word: null,
       currentDay: null,
       daysUntil: null,
@@ -68,15 +69,16 @@ export default class AuthController extends React.Component {
   reauth = () => {
     // This is called when the retreat start date changes
     // and on logout for a fresh perspective
-    this.logout();
+    this.resetState();
     this.componentDidMount();
   };
 
-  logout = () => {
+  resetState = () => {
     this.setState({
       loading: true,
       auth: false,
       user: null,
+      community: undefined,
       word: null,
       currentDay: null,
       daysUntil: null,
@@ -111,13 +113,14 @@ export default class AuthController extends React.Component {
     }
   };
 
-  onCommunity = communityid => {
+  onCommunity = async communityid => {
     // User has joined or created a community
     const {navigation} = this.props;
     navigation.pop();
 
-    this.setState({loading: true, community: communityid});
-    this.checkStartedAt();
+    await this.setState({loading: true, community: communityid}, () =>
+      this.reauth()
+    );
   };
 
   checkCommunity = async uid => {
@@ -143,7 +146,11 @@ export default class AuthController extends React.Component {
       u = await IgniteHelper.getUser(user.uid);
     }
 
-    if (u.startedAt === undefined || u.startedAt === null) {
+    if (
+      u.startedAt === undefined ||
+      u.startedAt === null ||
+      u.startedAt === ""
+    ) {
       this.setState({started: false});
     } else {
       const daysUntilStart = IgniteHelper.daysUntil(u.startedAt);
@@ -284,7 +291,6 @@ export default class AuthController extends React.Component {
     return (
       <MainScreen
         reauth={this.reauth}
-        logout={this.logout}
         user={user}
         community={community}
         currentDay={currentDay}
