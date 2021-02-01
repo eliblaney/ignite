@@ -1,5 +1,12 @@
 import React from "react";
-import {StyleSheet, ScrollView, View, Text} from "react-native";
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+} from "react-native";
 import {default as VIcon} from "react-native-vector-icons/SimpleLineIcons";
 import LinearGradient from "react-native-linear-gradient";
 import Markdown from "react-native-markdown-display";
@@ -29,6 +36,7 @@ export default withNavigation(
         refreshing: true,
         reflectionIsToday: true,
         showPromptMessage: true,
+        image: "default.jpg",
       };
 
       // I dream of the day when JS Date will finally know the months of the year
@@ -90,7 +98,7 @@ export default withNavigation(
 
       // determine whether this is a Lenten retreat to set
       // the maximum length of the reflections
-      let isLent = false;
+      let isLent = true;
       for (let i = 0; i < ashWednesdays.length; i++) {
         const aw = ashWednesdays[i];
         if (startedAt === aw) {
@@ -197,6 +205,7 @@ export default withNavigation(
         text: response.content,
         audio: response.audio,
         day,
+        image: response.image,
       });
 
       this.createTrackPlayer();
@@ -313,6 +322,7 @@ export default withNavigation(
         refreshing,
         showPromptMessage,
         reflectionIsToday,
+        image,
       } = this.state;
       const {startedAt, daysUntil, updateSuscipe} = this.props;
 
@@ -453,8 +463,12 @@ export default withNavigation(
             day={day}
             onChange={this.updateContent}
           />
-          <View style={styles.readerContainer}>
-            <ScrollView showVerticalScrollIndicator={false}>
+          <ScrollView showVerticalScrollIndicator={false}>
+            <Image
+              style={{width: Dimensions.get("window").width, height: 200}}
+              source={{uri: IgniteHelper.image(image)}}
+            />
+            <View style={styles.readerContainer}>
               {sundayComponent}
               <Text style={{marginBottom: 10}}>{suscipe}</Text>
               {reflectionText.map((textSegment, index) => (
@@ -465,8 +479,8 @@ export default withNavigation(
                   <Markdown style={markdownstyles}>{textSegment}</Markdown>
                 </View>
               ))}
-            </ScrollView>
-          </View>
+            </View>
+          </ScrollView>
           <AwesomeAlert
             show={reflectionText !== null && promptMessage}
             showProgress={false}

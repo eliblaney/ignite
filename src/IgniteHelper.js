@@ -32,6 +32,11 @@ export default class IgniteHelper {
     return user;
   }
 
+  static image = name => {
+    const uri = `https://eliblaney.com/ignite/images/${encodeURI(name)}`;
+    return uri;
+  };
+
   // encrypt data
   // personal = encrypt with device ID, making it unreadable to anyone except
   // the owner of the device
