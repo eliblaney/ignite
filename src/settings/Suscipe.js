@@ -81,7 +81,7 @@ export default withNavigation(
           />
           <Button
             onPress={async () => this.pushSuscipe(IgniteConfig.suscipe)}
-            title="Reset"
+            title="Reset to default"
             type="solid"
             titleStyle={{fontSize: 16}}
             buttonStyle={{margin: 10, backgroundColor: "#888888"}}
