@@ -12,6 +12,7 @@ import FirebaseLogin from "./FirebaseLogin";
 import KindlingDetail from "./src/KindlingDetail";
 import Account from "./src/settings/Account";
 import Suscipe from "./src/settings/Suscipe";
+import Contact from "./src/settings/Contact";
 
 const __DEV__ = true;
 
@@ -33,6 +34,7 @@ const AppContainer = createAppContainer(
       kindling: KindlingDetail,
       suscipe: Suscipe,
       account: Account,
+      contact: Contact,
     },
     {
       // "Back" button label shown on submenues like suscipe

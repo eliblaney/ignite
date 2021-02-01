@@ -93,6 +93,7 @@ export default withNavigation(
               {this.createCustom("Account", "account")}
               {/* this.createDetail('Dark Mode', 'whatisignite') */}
               {this.createHeader("About")}
+              {this.createCustom("Contact Us", "contact")}
               {this.createDetail("Attributions", "attributions")}
             </SettingsList>
           </View>
