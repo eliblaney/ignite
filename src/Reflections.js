@@ -433,22 +433,21 @@ export default withNavigation(
         !updateSuscipe
           ? promptSuscipe
           : false;
-      promptFasts =
-        showPromptMessage && promptFasts.enabled && reflectionIsToday ? (
-          <View>
-            <Button
-              title={promptFasts.button.text}
-              type="solid"
-              style={{marginTop: -30, marginBottom: 20}}
-              onPress={promptFasts.onConfirm}
-            />
-            <Text style={{paddingBottom: 60}}>
-              {promptFasts.button.description}
-            </Text>
-          </View>
-        ) : (
-          false
-        );
+      promptFasts = promptFasts.enabled ? (
+        <View>
+          <Button
+            title={promptFasts.button.text}
+            type="solid"
+            style={{marginTop: -30, marginBottom: 20}}
+            onPress={promptFasts.onConfirm}
+          />
+          <Text style={{paddingBottom: 60}}>
+            {promptFasts.button.description}
+          </Text>
+        </View>
+      ) : (
+        false
+      );
       const promptMessage =
         promptFasts.message !== undefined
           ? promptFasts.message
@@ -524,7 +523,7 @@ export default withNavigation(
             confirmButtonColor="#229944"
             onConfirmPressed={() => {
               this.setState({showPromptMessage: false});
-              promptMessage.onConfirm();
+              promptSuscipe.onConfirm();
             }}
           />
           <Overlay
