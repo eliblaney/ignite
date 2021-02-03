@@ -148,7 +148,7 @@ export default class PostList extends React.Component {
               // users are still being queried
               return null;
             }
-            if (filter === 0 && p.u !== uid) {
+            if (filter === 0 && p.user !== uid) {
               return null;
             }
             if (filter === 1 && p.community !== community) {
