@@ -7,6 +7,7 @@ import {
   View,
   Text,
 } from "react-native";
+import {Button, Overlay} from "react-native-elements";
 import {default as VIcon} from "react-native-vector-icons/SimpleLineIcons";
 import LinearGradient from "react-native-linear-gradient";
 import Markdown from "react-native-markdown-display";
@@ -22,6 +23,7 @@ import AudioPlayer from "./AudioPlayer";
 import Colors from "./Colors";
 import ashWednesdays from "../config/AshWednesdays";
 import markdownstyles from "./markdown-styles";
+import FastList from "./FastList";
 
 export default withNavigation(
   class Reflections extends React.Component {
@@ -37,6 +39,7 @@ export default withNavigation(
         reflectionIsToday: true,
         showPromptMessage: true,
         image: "default.jpg",
+        showFastsModal: false,
       };
 
       // I dream of the day when JS Date will finally know the months of the year
@@ -115,6 +118,7 @@ export default withNavigation(
         isLent,
         splashText: this.splashText(),
         suscipe: suscipeText,
+        user,
       });
 
       let date = new Date();
@@ -248,9 +252,11 @@ export default withNavigation(
 
       const options = {
         promptSuscipe: {
-          header: "Suscipe",
-          text: "Today, try customizing your suscipe prayer!",
           enabled: false,
+          message: {
+            header: "Suscipe",
+            text: "Today, try customizing your suscipe prayer!",
+          },
           onConfirm: () => {
             navigation.push("suscipe", {
               uid,
@@ -265,11 +271,13 @@ export default withNavigation(
           },
         },
         promptFasts: {
-          header: "Choose Fasts",
-          text: "Let's try choosing your fasts today!",
           enabled: false,
-          // TODO: Implement the ability to choose/view fasts
-          onConfirm: () => {},
+          button: {
+            text: "Choose Fasts",
+            description:
+              "Now that you've examined your patterns of sin, accepted God's mercy, and chosen fasts to strengthen you, you will be better able to follow Christ through his minsitry and get to know him through Ignatian contemplation in the coming weeks.",
+          },
+          onConfirm: () => this.setState({showFastsModal: true}),
         },
       };
       let audioTranscript = null;
@@ -323,6 +331,9 @@ export default withNavigation(
         showPromptMessage,
         reflectionIsToday,
         image,
+        showFastsModal,
+        user,
+        showFastsConfirmed,
       } = this.state;
       const {startedAt, daysUntil, updateSuscipe} = this.props;
 
@@ -423,10 +434,25 @@ export default withNavigation(
           ? promptSuscipe
           : false;
       promptFasts =
-        showPromptMessage && promptFasts.enabled && reflectionIsToday
-          ? promptFasts
-          : false;
-      const promptMessage = promptSuscipe || promptFasts;
+        showPromptMessage && promptFasts.enabled && reflectionIsToday ? (
+          <View>
+            <Button
+              title={promptFasts.button.text}
+              type="solid"
+              style={{marginTop: -30, marginBottom: 20}}
+              onPress={promptFasts.onConfirm}
+            />
+            <Text style={{paddingBottom: 60}}>
+              {promptFasts.button.description}
+            </Text>
+          </View>
+        ) : (
+          false
+        );
+      const promptMessage =
+        promptFasts.message !== undefined
+          ? promptFasts.message
+          : promptSuscipe.message;
 
       let sundayComponent;
       // Breaking fast occurs on Sundays after the first movement
@@ -475,17 +501,18 @@ export default withNavigation(
                 // Render audio component in place of [audio][/audio] tags
                 // reflectionText is an array split at that index
                 <View key={index.toString()}>
-                  {index > 0 && audioComponent}
+                  {index === 1 && audioComponent}
                   <Markdown style={markdownstyles}>{textSegment}</Markdown>
                 </View>
               ))}
+              {promptFasts}
             </View>
           </ScrollView>
           <AwesomeAlert
             show={reflectionText !== null && promptMessage}
             showProgress={false}
-            title={promptMessage.header}
-            message={promptMessage.text}
+            title={promptMessage ? promptMessage.header : ""}
+            message={promptMessage ? promptMessage.text : ""}
             closeOnTouchOutside={false}
             closeOnHardwareBackPress={false}
             showCancelButton={true}
@@ -498,6 +525,34 @@ export default withNavigation(
             onConfirmPressed={() => {
               this.setState({showPromptMessage: false});
               promptMessage.onConfirm();
+            }}
+          />
+          <Overlay
+            isVisible={showFastsModal}
+            overlayStyle={{backgroundColor: Colors.modalBackground}}
+            onBackdropPress={() => this.setState({showFastsModal: null})}
+          >
+            <FastList
+              user={user}
+              onSave={() =>
+                this.setState({showFastsModal: null, showFastsConfirmed: true})
+              }
+            />
+          </Overlay>
+          <AwesomeAlert
+            show={showFastsConfirmed}
+            showProgress={false}
+            title="Yay!"
+            message="You can always find these fasts with the Kindling."
+            closeOnTouchOutside={false}
+            closeOnHardwareBackPress={false}
+            showCancelButton={false}
+            showConfirmButton={true}
+            onDismiss={() => this.setState({showFastsConfirmed: false})}
+            confirmText="Cool!"
+            confirmButtonColor="#229944"
+            onConfirmPressed={() => {
+              this.setState({showFastsConfirmed: false});
             }}
           />
         </View>

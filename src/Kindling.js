@@ -89,6 +89,7 @@ export default withNavigation(
                 "prepareforignite"
               )}
               {this.createHeader("Settings")}
+              {this.createCustom("Edit Fasts", "fasts")}
               {this.createCustom("Edit Suscipe", "suscipe")}
               {this.createCustom("Account", "account")}
               {/* this.createDetail('Dark Mode', 'whatisignite') */}

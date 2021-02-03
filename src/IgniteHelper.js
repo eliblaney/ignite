@@ -23,6 +23,7 @@ export default class IgniteHelper {
       return data;
     } catch {
       // Default error case
+      Reactotron.error("Ignite API Error");
       return {success: "0", error: "998"};
     }
   }

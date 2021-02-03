@@ -13,6 +13,7 @@ import KindlingDetail from "./src/KindlingDetail";
 import Account from "./src/settings/Account";
 import Suscipe from "./src/settings/Suscipe";
 import Contact from "./src/settings/Contact";
+import Fasts from "./src/settings/Fasts";
 
 const __DEV__ = true;
 
@@ -35,6 +36,7 @@ const AppContainer = createAppContainer(
       suscipe: Suscipe,
       account: Account,
       contact: Contact,
+      fasts: Fasts,
     },
     {
       // "Back" button label shown on submenues like suscipe
