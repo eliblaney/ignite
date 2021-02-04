@@ -14,6 +14,7 @@ import Account from "./src/settings/Account";
 import Suscipe from "./src/settings/Suscipe";
 import Contact from "./src/settings/Contact";
 import Fasts from "./src/settings/Fasts";
+import Examen from "./src/settings/Examen";
 
 const __DEV__ = true;
 
@@ -37,6 +38,7 @@ const AppContainer = createAppContainer(
       account: Account,
       contact: Contact,
       fasts: Fasts,
+      examen: Examen,
     },
     {
       // "Back" button label shown on submenues like suscipe
