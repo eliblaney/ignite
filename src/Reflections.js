@@ -182,7 +182,7 @@ export default withNavigation(
       if (audio !== undefined && audio !== null && audio.length > 0) {
         TrackPlayer.setupPlayer().then(async () => {
           const track = {
-            id: this.uuidv4(),
+            id: IgniteHelper.uuidv4(),
             url: audio,
             title: `Day ${day} Contemplation`,
             artist: "Ignite",
@@ -213,15 +213,6 @@ export default withNavigation(
       });
 
       this.createTrackPlayer();
-    };
-
-    // to create unique ids for the tracks, required by TrackPlayer
-    uuidv4 = () => {
-      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-        const r = (Math.random() * 16) | 0,
-          v = c === "x" ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-      });
     };
 
     isPlaying = async () => {

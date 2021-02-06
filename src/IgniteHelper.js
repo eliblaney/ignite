@@ -213,4 +213,13 @@ export default class IgniteHelper {
     const daysUntil = (toDate - fromDate) / 1000 / 60 / 60 / 24;
     return daysUntil;
   };
+
+  // to create unique ids for the tracks, required by TrackPlayer
+  static uuidv4 = () => {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+      const r = (Math.random() * 16) | 0,
+        v = c === "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  };
 }

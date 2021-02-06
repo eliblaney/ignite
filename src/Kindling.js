@@ -88,6 +88,7 @@ export default withNavigation(
                 "How to prepare for Ignite",
                 "prepareforignite"
               )}
+              {this.createCustom("The Examen", "examen")}
               {this.createHeader("Settings")}
               {this.createCustom("Edit Fasts", "fasts")}
               {this.createCustom("Edit Suscipe", "suscipe")}
