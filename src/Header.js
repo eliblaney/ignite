@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: Colors.primary,
     justifyContent: "space-around",
+    paddingTop: 20,
   },
   title: {
     fontSize: 24,
