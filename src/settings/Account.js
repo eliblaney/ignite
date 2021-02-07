@@ -13,7 +13,7 @@ export default withNavigation(
       return {
         headerMode: "float",
         headerBackTitleVisible: true,
-        title: "Edit Account",
+        title: "Account",
       };
     };
 
