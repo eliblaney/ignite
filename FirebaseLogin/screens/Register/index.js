@@ -158,7 +158,7 @@ export default class Register extends Component {
           ref={ref => this.repeat = ref}
           icon={repeat}
         />
-		<ButtonGroup onPress={this.updateFaith} selectedIndex={this.state.faithIndex} buttons={buttons} containerStyle={{height: 50, backgroundColor: "transparent"}} buttonStyle={{backgroundColor: "transparent"}} />
+        {/*<ButtonGroup onPress={this.updateFaith} selectedIndex={this.state.faithIndex} buttons={buttons} containerStyle={{height: 50, backgroundColor: "transparent"}} buttonStyle={{backgroundColor: "transparent"}} />*/}
         <Continue isCreating={this.state.isCreatingAccount} click={this.createUserAccount}/>
         <TouchableOpacity onPress={this.props.change('login')} style={styles.touchable}>
           <Text style={styles.signIn}>{'<'} Sign In</Text>
