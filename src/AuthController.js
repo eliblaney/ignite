@@ -118,9 +118,9 @@ export default class AuthController extends React.Component {
     const {navigation} = this.props;
     navigation.pop();
 
-    await this.setState({loading: true, community: communityid}, () =>
-      this.reauth()
-    );
+    await this.setState({loading: true, community: communityid}, () => {
+      this.reauth();
+    });
   };
 
   checkCommunity = async uid => {
@@ -151,7 +151,7 @@ export default class AuthController extends React.Component {
       u.startedAt === null ||
       u.startedAt === ""
     ) {
-      this.setState({started: false});
+      await this.setState({started: false});
     } else {
       const daysUntilStart = IgniteHelper.daysUntil(u.startedAt);
       const started = daysUntilStart <= 0;
@@ -160,14 +160,14 @@ export default class AuthController extends React.Component {
         // current day of the retreat (1, 2, 3, ...)
         const currentDay = -daysUntilStart + 1;
 
-        this.setState({
+        await this.setState({
           started: true,
           startedAt: u.startedAt,
           currentDay,
         });
       } else {
         // start date is in the future (probably next Ash Wednesday)
-        this.setState({
+        await this.setState({
           started: false,
           daysUntil: daysUntilStart,
         });

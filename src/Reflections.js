@@ -110,7 +110,7 @@ export default withNavigation(
         }
       }
 
-      this.setState({
+      await this.setState({
         lang,
         faith,
         startedAt,
@@ -121,27 +121,7 @@ export default withNavigation(
         user,
       });
 
-      let date = new Date();
-
-      const day = this.getDay(date);
-
-      if (!isLent && day > 40) {
-        // if it's a normal 40-day retreat, the last date
-        // that exists is day 40
-        date = new Date(`${startedAt}T00:00:00`);
-        date.setDate(date.getDate() + 40);
-      } else if (day > 51) {
-        // if it's a Lenten 51-day retreat, the last date
-        // that exists is day 51
-        date = new Date(`${startedAt}T00:00:00`);
-        date.setDate(date.getDate() + 51);
-      }
-      if (day < 1) {
-        // and if somehow this happens...
-        date = new Date(`${startedAt}T00:00:00`);
-      }
-
-      this.updateContent(date);
+      this.setDate();
     }
 
     // TODO: Choose which reflections to remove from the non-Lent version
@@ -157,6 +137,32 @@ export default withNavigation(
       this.destroyPlayer();
     }
 
+    setDate = () => {
+      const {isLent, startedAt} = this.state;
+
+      let date = new Date();
+
+      const day = this.getDay(date);
+
+      if (!isLent && day > 40) {
+        // if it's a normal 40-day retreat, the last date
+        // that exists is day 40
+        date = new Date(`${startedAt}T00:00:00`);
+        date.setDate(date.getDate() + 39);
+      } else if (day > 51) {
+        // if it's a Lenten 51-day retreat, the last date
+        // that exists is day 51
+        date = new Date(`${startedAt}T00:00:00`);
+        date.setDate(date.getDate() + 50);
+      }
+      if (day < 1) {
+        // and if somehow this happens...
+        date = new Date(`${startedAt}T00:00:00`);
+      }
+
+      this.updateContent(date);
+    };
+
     getDay = date => {
       // day refers to the current day of the retreat (1, 2, 3, etc)
       const {startedAt} = this.state;
@@ -166,13 +172,13 @@ export default withNavigation(
       return IgniteHelper.daysBetween(startedAt, date) + 1;
     };
 
-    updateContent = date => {
+    updateContent = async date => {
       const {lang, faith} = this.state;
       const day = this.getDay(date);
       const isSunday = date.getDay() === 0;
       const reflectionIsToday = IgniteHelper.toISO(date) === this.today;
 
-      this.setState({date, isSunday, reflectionIsToday});
+      await this.setState({date, isSunday, reflectionIsToday});
 
       this.getContent(day, lang, faith);
     };
@@ -309,8 +315,8 @@ export default withNavigation(
     render() {
       const {
         loading,
-        splashText,
         date,
+        splashText,
         isOwner,
         isSunday,
         audio,
@@ -326,7 +332,7 @@ export default withNavigation(
         user,
         showFastsConfirmed,
       } = this.state;
-      const {startedAt, daysUntil, updateSuscipe} = this.props;
+      const {reauth, startedAt, daysUntil, updateSuscipe} = this.props;
 
       if (loading) {
         return <LoadingScreen />;
@@ -384,6 +390,12 @@ export default withNavigation(
             </View>
           </LinearGradient>
         );
+      }
+
+      if (!date) {
+        // This will sometimes happen when logging in on day 1 for some reason
+        reauth();
+        return <LoadingScreen />;
       }
 
       // maybe I'm asking too much of our poor Date object, but having a

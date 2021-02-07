@@ -48,6 +48,7 @@ export default class MainScreen extends React.PureComponent {
     );
     const reflectionsComponent = (
       <Reflections
+        reauth={reauth}
         uid={user.uid}
         community={community}
         startedAt={started ? startedAt : false}

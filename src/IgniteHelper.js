@@ -164,14 +164,12 @@ export default class IgniteHelper {
     } else if (day <= 11 + 26 + 9 + 5) {
       return 4;
     } else {
-      return null;
+      return 5;
     }
   };
 
   static movementText = movement => {
     switch (movement) {
-      default:
-        return null;
       case 1:
         return "1st Movement";
       case 2:
@@ -180,6 +178,9 @@ export default class IgniteHelper {
         return "3rd Movement";
       case 4:
         return "4th Movement";
+      default:
+      case 5:
+        return "Alumnus";
     }
   };
 

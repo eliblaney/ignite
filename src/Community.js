@@ -16,7 +16,7 @@ import {
   Overlay,
   Tooltip,
 } from "react-native-elements";
-import DatePicker from "react-native-datepicker";
+import DatePicker from "react-native-date-picker";
 import AwesomeAlert from "react-native-awesome-alerts";
 import IgniteHelper from "./IgniteHelper";
 import Colors from "./Colors";
@@ -125,6 +125,7 @@ export default class Community extends React.Component {
 
     // get next ash wednesday date
     let nextAshWednesday = "";
+    let ashWednesdayDefault = null;
     if (!currentDay) {
       for (let i = 0; i < ashWednesdays.length; i++) {
         const aw = ashWednesdays[i];
@@ -135,6 +136,7 @@ export default class Community extends React.Component {
             nextAshWednesday.getTime() +
               nextAshWednesday.getTimezoneOffset() * 60 * 1000
           );
+          ashWednesdayDefault = nextAshWednesday;
           nextAshWednesday = nextAshWednesday.toLocaleDateString("en-US");
           break;
         }
@@ -148,6 +150,7 @@ export default class Community extends React.Component {
       postButton,
       community: c,
       ashWednesday: nextAshWednesday,
+      chosenStartDate: ashWednesdayDefault,
     });
   }
 
@@ -428,7 +431,7 @@ export default class Community extends React.Component {
 
         <Overlay
           isVisible={pickDate}
-          overlayStyle={{backgroundColor: Colors.modalBackground, height: 300}}
+          overlayStyle={{backgroundColor: Colors.modalBackground, height: 425}}
         >
           <View
             style={{
@@ -445,8 +448,8 @@ export default class Community extends React.Component {
               Ash Wednesday will be on {ashWednesday}.
             </Text>
             <DatePicker
-              style={{width: 200}}
               date={chosenStartDate}
+              minimumDate={new Date()}
               mode="date"
               placeholder="Tap to choose date"
               format="YYYY-MM-DD"
@@ -483,7 +486,7 @@ export default class Community extends React.Component {
               />
               <Button
                 onPress={async () => {
-                  const startDate = chosenStartDate;
+                  const startDate = IgniteHelper.toISO(chosenStartDate);
                   const result = await IgniteHelper.api(
                     "community",
                     /* eslint-disable react/destructuring-assignment */
@@ -502,7 +505,8 @@ export default class Community extends React.Component {
                       // Not enough members in community
                       this.setState({
                         pickDate: false,
-                        error: "You need at least 4 members in your community.",
+                        error:
+                          "You need at least 4 members in your community to start Ignite.",
                       });
                     } else if (errorCode === "43") {
                       // Too many members
