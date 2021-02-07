@@ -17,7 +17,7 @@ export default class JoinCommunityScreen extends React.Component {
       screen: 0, // 0: Welcome, 1: Find Community, 2: Create Community, 3: Confirm Join Community
       inputEditable: true,
       error: null,
-      publicChecked: false,
+      publicChecked: true,
       showConfirmMatch: false,
     };
   }
@@ -309,12 +309,12 @@ export default class JoinCommunityScreen extends React.Component {
             <CheckBox
               center
               editable={inputEditable}
-              title="Public"
+              title="Private"
               containerStyle={styles.checkStyle}
               textStyle={styles.inputTextStyle}
               checkedColor={Colors.secondaryText}
               uncheckedColor={Colors.secondaryText}
-              checked={publicChecked}
+              checked={!publicChecked}
               onPress={() => this.setState({publicChecked: !publicChecked})}
             />
             <Button
