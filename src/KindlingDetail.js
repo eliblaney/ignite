@@ -1,5 +1,5 @@
 import React from "react";
-import {ScrollView, StyleSheet} from "react-native";
+import {Platform, ScrollView, StyleSheet} from "react-native";
 import Markdown from "react-native-markdown-display";
 import {withNavigation} from "react-navigation";
 import markdownstyles from "../markdown-styles";
@@ -10,7 +10,7 @@ export default withNavigation(
     static navigationOptions = ({navigation}) => {
       return {
         headerMode: "float",
-        headerBackTitleVisible: true,
+        headerBackTitleVisible: Platform.OS === "ios",
         title: navigation.getParam("title", "Ignite"),
       };
     };

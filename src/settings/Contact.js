@@ -1,6 +1,6 @@
 import React from "react";
 import {withNavigation} from "react-navigation";
-import {StyleSheet, Text, View} from "react-native";
+import {Platform, StyleSheet, Text, View} from "react-native";
 import {Button, Input} from "react-native-elements";
 import AwesomeAlert from "react-native-awesome-alerts";
 import IgniteHelper from "../IgniteHelper";
@@ -11,7 +11,7 @@ export default withNavigation(
     static navigationOptions = ({navigation}) => {
       return {
         headerMode: "float",
-        headerBackTitleVisible: true,
+        headerBackTitleVisible: Platform.OS === "ios",
         title: "Contact Us",
       };
     };

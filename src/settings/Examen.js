@@ -1,6 +1,6 @@
 import React from "react";
 import {withNavigation} from "react-navigation";
-import {Text, ScrollView} from "react-native";
+import {Platform, Text, ScrollView} from "react-native";
 import Markdown from "react-native-markdown-display";
 import TrackPlayer from "react-native-track-player";
 import IgniteHelper from "../IgniteHelper";
@@ -12,7 +12,7 @@ export default withNavigation(
     static navigationOptions = ({navigation}) => {
       return {
         headerMode: "float",
-        headerBackTitleVisible: true,
+        headerBackTitleVisible: Platform.OS === "ios",
         title: "The Examen",
       };
     };

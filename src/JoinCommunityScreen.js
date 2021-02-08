@@ -18,7 +18,6 @@ export default class JoinCommunityScreen extends React.Component {
       inputEditable: true,
       error: null,
       publicChecked: true,
-      showConfirmMatch: false,
     };
   }
 
@@ -139,33 +138,23 @@ export default class JoinCommunityScreen extends React.Component {
     const communities = await IgniteHelper.api("community", "action=getp");
     if (communities.success === "1" && communities.num > 0) {
       const c = this.selectSuitableCommunity(communities.communities);
-      this.setState({
-        showConfirmMatch: false,
-      });
       const errorCode = await this.doJoinCommunity(c);
       if (errorCode) {
         this.setState({
-          showConfirmMatch: false,
+          screen: 4,
           error: `Sorry, something went wrong. Please check your internet and try again. [Error ${errorCode}]`,
         });
       }
     } else {
       this.setState({
-        showConfirmMatch: false,
+        screen: 0,
         error: "There were no available communities :(",
       });
     }
   };
 
   render() {
-    const {
-      screen,
-      inputEditable,
-      community,
-      error,
-      publicChecked,
-      showConfirmMatch,
-    } = this.state;
+    const {screen, inputEditable, community, error, publicChecked} = this.state;
 
     switch (screen) {
       default:
@@ -188,7 +177,7 @@ export default class JoinCommunityScreen extends React.Component {
             />
             <Text style={styles.smalltext}>Don&apos;t know who to join?</Text>
             <Button
-              onPress={() => this.setState({showConfirmMatch: true})}
+              onPress={() => this.setState({screen: 4})}
               raised
               title="Match Me!"
               type="solid"
@@ -202,21 +191,6 @@ export default class JoinCommunityScreen extends React.Component {
               type="outline"
               titleStyle={styles.outlineText}
               buttonStyle={styles.outlineButton}
-            />
-            <AwesomeAlert
-              show={showConfirmMatch}
-              showProgress={false}
-              title="Find Match"
-              message="This will pair you up with a compatible community. Is that okay?"
-              closeOnTouchOutside={true}
-              closeOnHardwareBackPress={false}
-              showCancelButton={true}
-              showConfirmButton={true}
-              confirmText="Okay"
-              confirmButtonColor="#DD6B55"
-              cancelButtonColor={Colors.fadedText}
-              onConfirmPressed={() => this.findMatch()}
-              onCancelPressed={() => this.setState({showConfirmMatch: false})}
             />
             <AwesomeAlert
               show={error !== null && error !== undefined}
@@ -390,6 +364,50 @@ export default class JoinCommunityScreen extends React.Component {
             />
           </LinearGradient>
         );
+      case 4:
+        return (
+          <LinearGradient
+            colors={[Colors.primary, Colors.secondary]}
+            style={[styles.container, styles.gradientBackground]}
+          >
+            <View style={styles.confirmCommunityView}>
+              <Text style={styles.confirmTitle}>Confirm</Text>
+              <Text style={[{textAlign: "center"}, styles.confirmDesc]}>
+                This will pair you up with a compatible community. Is that okay?
+              </Text>
+              <View style={styles.confirmButtonView}>
+                <Button
+                  onPress={() => this.setState({screen: 0})}
+                  raised
+                  title="Cancel"
+                  type="clear"
+                  buttonStyle={styles.outlineButton}
+                  titleStyle={styles.outlineText}
+                />
+                <Button
+                  onPress={() => this.findMatch()}
+                  raised
+                  title="Yes!"
+                  type="solid"
+                  buttonStyle={[styles.solidButton, {padding: 10}]}
+                />
+              </View>
+            </View>
+            <AwesomeAlert
+              show={error !== null && error !== undefined}
+              showProgress={false}
+              title="Error"
+              message={error}
+              closeOnTouchOutside={true}
+              closeOnHardwareBackPress={false}
+              showCancelButton={false}
+              showConfirmButton={true}
+              confirmText="Okay"
+              confirmButtonColor="#DD6B55"
+              onConfirmPressed={() => this.setState({error: null})}
+            />
+          </LinearGradient>
+        );
     }
   }
 }
@@ -426,6 +444,7 @@ const styles = StyleSheet.create({
   solidButton: {
     backgroundColor: Colors.tertiary,
     padding: 15,
+    zIndex: 1,
   },
   outlineButton: {
     borderColor: Colors.tertiary,

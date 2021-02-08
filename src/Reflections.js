@@ -186,16 +186,15 @@ export default withNavigation(
     createTrackPlayer = async () => {
       const {audio, day} = this.state;
       if (audio !== undefined && audio !== null && audio.length > 0) {
-        TrackPlayer.setupPlayer().then(async () => {
-          const track = {
-            id: IgniteHelper.uuidv4(),
-            url: audio,
-            title: `Day ${day} Contemplation`,
-            artist: "Ignite",
-          };
-          await TrackPlayer.reset();
-          await TrackPlayer.add(track);
-        });
+        await TrackPlayer.setupPlayer();
+        const track = {
+          id: IgniteHelper.uuidv4(),
+          url: audio,
+          title: `Day ${day} Contemplation`,
+          artist: "Ignite",
+        };
+        await TrackPlayer.reset();
+        await TrackPlayer.add(track);
       }
     };
 

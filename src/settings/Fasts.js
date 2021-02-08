@@ -1,5 +1,6 @@
 import React from "react";
 import {withNavigation} from "react-navigation";
+import {Platform} from "react-native";
 import IgniteHelper from "../IgniteHelper";
 import FastList from "../FastList";
 import LoadingScreen from "../LoadingScreen";
@@ -9,7 +10,7 @@ export default withNavigation(
     static navigationOptions = ({navigation}) => {
       return {
         headerMode: "float",
-        headerBackTitleVisible: true,
+        headerBackTitleVisible: Platform.OS === "ios",
         title: "Edit Fasts",
       };
     };

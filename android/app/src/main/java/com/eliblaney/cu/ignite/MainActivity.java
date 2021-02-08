@@ -1,4 +1,4 @@
-package com.ignite;
+package com.eliblaney.cu.ignite;
 
 import com.facebook.react.ReactActivity;
 

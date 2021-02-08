@@ -1,5 +1,5 @@
 import React from "react";
-import {View} from "react-native";
+import {Platform, View} from "react-native";
 import {Button} from "react-native-elements";
 import {withNavigation} from "react-navigation";
 import auth from "@react-native-firebase/auth";
@@ -12,7 +12,7 @@ export default withNavigation(
     static navigationOptions = ({navigation}) => {
       return {
         headerMode: "float",
-        headerBackTitleVisible: true,
+        headerBackTitleVisible: Platform.OS === "ios",
         title: "Account",
       };
     };

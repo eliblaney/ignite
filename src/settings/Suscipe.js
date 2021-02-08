@@ -1,6 +1,6 @@
 import React from "react";
 import {withNavigation} from "react-navigation";
-import {View, TextInput} from "react-native";
+import {Platform, View, TextInput} from "react-native";
 import {Button} from "react-native-elements";
 import IgniteConfig from "../../config/IgniteConfig";
 import IgniteHelper from "../IgniteHelper";
@@ -10,7 +10,7 @@ export default withNavigation(
     static navigationOptions = ({navigation}) => {
       return {
         headerMode: "float",
-        headerBackTitleVisible: true,
+        headerBackTitleVisible: Platform.OS === "ios",
         title: "Edit Suscipe",
       };
     };

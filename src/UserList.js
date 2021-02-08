@@ -74,9 +74,6 @@ export default class UserList extends React.Component {
           confirmText="Close"
           confirmButtonColor={Colors.fadedText}
           onConfirmPressed={() => this.setState({userDetails: false})}
-          overlayStyle={{
-            top: -255,
-          }}
         />
       </View>
     );
