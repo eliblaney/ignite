@@ -4,6 +4,8 @@ import Colors from "./Colors";
 const styles = {
   body: {
     marginBottom: 40,
+    marginRight: 10,
+    marginLeft: 10,
     color: Colors.text,
   },
   blockquote: {

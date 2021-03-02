@@ -64,7 +64,8 @@ export default withNavigation(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.backgroundModal,
+    color: Colors.modalText,
     padding: 10,
     paddingRight: 20,
     paddingBottom: 40,
