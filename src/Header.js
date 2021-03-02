@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     justifyContent: "space-around",
     paddingTop: 40,
-    height: Platform.OS === "ios" ? 85 : undefined,
+    // height: Platform.OS === "ios" ? 85 : undefined,
   },
   title: {
     fontSize: 24,

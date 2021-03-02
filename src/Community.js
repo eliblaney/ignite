@@ -825,7 +825,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   subtext: {
-    color: Colors.secondaryText,
+    color: Colors.lightText,
     fontSize: 12,
     textAlign: "center",
     marginTop: -10,

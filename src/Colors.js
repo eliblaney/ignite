@@ -13,7 +13,8 @@ export default {
   secondary: "#00cccc",
   tertiary: "#f2730c",
   primaryText: "#ffffff",
-  get secondaryText() {
+  secondaryText: "rgba(255, 255, 255, 0.7)",
+  get lightText() {
     return dark ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.5)";
   },
   get modalBackground() {
