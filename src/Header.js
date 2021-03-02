@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: Colors.primary,
     justifyContent: "space-around",
-    paddingTop: 40,
+    // paddingTop: 40,
     // height: Platform.OS === "ios" ? 85 : undefined,
   },
   title: {
