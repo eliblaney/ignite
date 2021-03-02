@@ -1,67 +1,91 @@
 import React from "react";
-import {StyleSheet, TouchableOpacity, View} from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import {Icon, Slider} from "react-native-elements";
-import TrackPlayer from "react-native-track-player";
+import {Player} from "@react-native-community/audio-toolkit";
 import Markdown from "react-native-markdown-display";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 import markdownstyles from "./markdown-styles";
 import Colors from "./Colors";
 
-export default class AudioPlayer extends TrackPlayer.ProgressComponent {
+export default class AudioPlayer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {playing: false, showTranscript: false};
+    this.state = {showTranscript: false, playing: false, progress: 0};
   }
 
-  componentDidMount() {
-    super.componentDidMount();
-    this.onQueueEnded = TrackPlayer.addEventListener(
-      "playback-queue-ended",
-      async data => {
-        // This stops the player from repeating the queue...
-        TrackPlayer.destroy();
-        this.props.createTrackPlayer();
+  async componentDidMount() {
+    const {audio} = this.props;
+    this.player = new Player(audio, {
+      autoDestroy: false,
+      continuesToPlayInBackground: true,
+    }).prepare(err => {
+      if (!err) {
+        this.player.looping = false;
+        this.player.wakeLock = true;
+
+        this.timer = setInterval(() => {
+          this.setState({
+            progress:
+              Math.max(0, this.player.currentTime) / this.player.duration,
+          });
+        }, 200);
+      } else {
+        this.setState({error: err.err});
       }
-    );
-    this.onPlaybackStateChange = TrackPlayer.addEventListener(
-      "playback-state",
-      async data => {
-        this.setState({playing: data.state === "playing"});
-      }
-    );
+    });
   }
 
-  componentWillUnmount() {
-    super.componentWillUnmount();
-    this.onQueueEnded.remove();
-    this.onPlaybackStateChange.remove();
+  async componentWillUnmount() {
+    if (this.player) {
+      this.player.destroy();
+    }
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
   }
+
+  playPause = async () => {
+    const {playing} = this.state;
+    if (playing) {
+      this.player.pause();
+    } else {
+      this.player.play();
+    }
+    this.setState({playing: !playing});
+  };
 
   render() {
-    const {showTranscript} = this.state;
+    if (!error && !this.player) {
+      return <ActivityIndicator />;
+    }
+
+    const {showTranscript, playing, progress, error} = this.state;
     const {audioTranscript} = this.props;
 
     return (
       <View>
-        {/*
-        <Text style={styles.audioHeader}>Today&apos;s Contemplation</Text>
-        */}
         <View style={styles.progressBarView}>
           <View style={styles.audioControls}>
             <TouchableOpacity>
               <Icon
                 raised
-                name={this.state.playing ? "pause" : "play"}
+                name={playing ? "pause" : "play"}
                 type="font-awesome"
                 color={Colors.tertiary}
-                onPress={this.props.playPause}
+                onPress={this.playPause}
               />
             </TouchableOpacity>
             <View style={{flex: 9}}>
               <Slider
                 disabled
                 style={{width: "100%"}}
-                value={this.getProgress()}
+                value={progress}
                 thumbTintColor={Colors.tertiary}
                 thumbStyle={{width: 12, height: 12}}
                 minimumTrackTintColor={Colors.tertiary}
@@ -89,6 +113,19 @@ export default class AudioPlayer extends TrackPlayer.ProgressComponent {
             </View>
           )}
         </View>
+        <AwesomeAlert
+          show={error && error !== true}
+          showProgress={false}
+          title="Error"
+          message={`Sorry, could not load audio. Please restart the app and try again. (Error: ${error})`}
+          closeOnTouchOutside={false}
+          closeOnHardwareBackPress={false}
+          showCancelButton={false}
+          showConfirmButton={true}
+          confirmButtonText="Close"
+          confirmButtonColor="#676767"
+          onConfirmPressed={() => this.setState({error: true})}
+        />
       </View>
     );
   }
@@ -111,17 +148,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  /*
-  audioHeader: {
-    fontSize: 23,
-    textAlign: "center",
-    marginTop: 20,
-    color: Colors.fadedText,
-    fontWeight: "bold",
-  },
-  */
   transcriptContainer: {
     marginLeft: 20,
-    marginRight: 20,
+    marginRight: 50,
+    paddingRight: 50,
   },
 });

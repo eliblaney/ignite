@@ -11,7 +11,6 @@ import {Button, Overlay} from "react-native-elements";
 import {default as VIcon} from "react-native-vector-icons/SimpleLineIcons";
 import LinearGradient from "react-native-linear-gradient";
 import Markdown from "react-native-markdown-display";
-import TrackPlayer from "react-native-track-player";
 import AwesomeAlert from "react-native-awesome-alerts";
 import {withNavigation} from "react-navigation";
 
@@ -133,10 +132,6 @@ export default withNavigation(
       return !nextState.loading;
     }
 
-    componentWillUnmount() {
-      this.destroyPlayer();
-    }
-
     setDate = () => {
       const {isLent, startedAt} = this.state;
 
@@ -183,25 +178,6 @@ export default withNavigation(
       this.getContent(day, lang, faith);
     };
 
-    createTrackPlayer = async () => {
-      const {audio, day} = this.state;
-      if (audio !== undefined && audio !== null && audio.length > 0) {
-        await TrackPlayer.setupPlayer();
-        const track = {
-          id: IgniteHelper.uuidv4(),
-          url: audio,
-          title: `Day ${day} Contemplation`,
-          artist: "Ignite",
-        };
-        await TrackPlayer.reset();
-        await TrackPlayer.add(track);
-      }
-    };
-
-    destroyPlayer = async () => {
-      TrackPlayer.destroy();
-    };
-
     getContent = async (day, lang, religion, flag = 0) => {
       const response = await IgniteHelper.api(
         "day",
@@ -216,22 +192,6 @@ export default withNavigation(
         day,
         image: response.image,
       });
-
-      this.createTrackPlayer();
-    };
-
-    isPlaying = async () => {
-      const state = await TrackPlayer.getState();
-      return state === "playing";
-    };
-
-    playPause = async () => {
-      const playing = await this.isPlaying();
-      if (playing) {
-        await TrackPlayer.pause();
-      } else {
-        await TrackPlayer.play();
-      }
     };
 
     splashText = () => {
@@ -474,8 +434,8 @@ export default withNavigation(
       if (audio !== undefined && audio !== null && audio.length > 0) {
         audioComponent = (
           <AudioPlayer
-            playPause={this.playPause}
-            createTrackPlayer={this.createTrackPlayer}
+            audio={audio}
+            title={`Day ${day} Contemplation`}
             audioTranscript={audioTranscript}
           />
         );

@@ -12,6 +12,7 @@
     "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/Ignite/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'"
   },
   "dependencies": {
+    "@react-native-community/audio-toolkit": "^2.0.3",
     "@react-native-community/cli": "^4.10.0",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-firebase/app": "^7.2.1",
@@ -39,7 +40,6 @@
     "react-native-settings-list": "^1.8.0",
     "react-native-swift": "^1.2.3",
     "react-native-swiper": "^1.6.0-nightly.5",
-    "react-native-track-player": "^1.1.8",
     "react-native-vector-icons": "^6.6.0",
     "react-native-viewpager": "^0.2.13",
     "react-navigation": "^3.13.0",
