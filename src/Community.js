@@ -64,16 +64,35 @@ export default class Community extends React.Component {
     // Because the creator of the community is the first member...
     const isOwner = users[0].uid === uid;
     let joinComponent;
+    let startedJoinComponent;
     if (
-      !startedAt &&
       c.joincode !== undefined &&
       c.joincode !== null &&
       c.joincode.length > 0
     ) {
       const joincode = c.joincode.toUpperCase();
-      joinComponent = (
-        <View style={styles.joincodeView}>
-          <Text style={styles.joincodeTitle}>Your join code is:</Text>
+      if (!startedAt) {
+        joinComponent = (
+          <View style={styles.joincodeView}>
+            <Text style={styles.joincodeTitle}>Your join code is:</Text>
+            <Text
+              onPress={() =>
+                Share.share({
+                  // now that's what I call spreading the holy fire of Big J
+                  message: `🔥 Join my Ignite community!\n🔥 Here's the code: ${joincode}`,
+                })
+              }
+              style={styles.joincodeText}
+            >
+              {joincode}
+            </Text>
+            <Text style={styles.joincodeDesc}>
+              This code is used to let others join your community!
+            </Text>
+          </View>
+        );
+      } else {
+        startedJoinComponent = (
           <Text
             onPress={() =>
               Share.share({
@@ -81,15 +100,12 @@ export default class Community extends React.Component {
                 message: `🔥 Join my Ignite community!\n🔥 Here's the code: ${joincode}`,
               })
             }
-            style={styles.joincodeText}
+            style={styles.subtext}
           >
-            {joincode}
+            Your join code is {joincode}
           </Text>
-          <Text style={styles.joincodeDesc}>
-            This code is used to let others join your community!
-          </Text>
-        </View>
-      );
+        );
+      }
     }
     let postButton;
     if (startedAt === false) {
@@ -108,7 +124,7 @@ export default class Community extends React.Component {
             disabled
             title="Write Post"
             type="solid"
-            style={{width: "100%"}}
+            style={{width: "100%", marginTop: 20}}
           />
         </Tooltip>
       );
@@ -118,7 +134,7 @@ export default class Community extends React.Component {
           title="Write Post"
           type="solid"
           onPress={() => this.setState({isWriting: true})}
-          style={{width: "100%"}}
+          style={{width: "100%", marginTop: 20}}
         />
       );
     }
@@ -147,6 +163,7 @@ export default class Community extends React.Component {
       users,
       isOwner,
       joinComponent,
+      startedJoinComponent,
       postButton,
       community: c,
       ashWednesday: nextAshWednesday,
@@ -298,6 +315,7 @@ export default class Community extends React.Component {
       community,
       postButton,
       joinComponent,
+      startedJoinComponent,
       isOwner,
       loadMore,
       doRefresh,
@@ -420,12 +438,13 @@ export default class Community extends React.Component {
           {joinComponent}
           {startButton}
           {startText}
+          {conditionalPostButton}
           <UserList
             title={community.name}
             users={users}
             style={styles.userlist}
           />
-          {conditionalPostButton}
+          {startedJoinComponent}
           {postList}
         </View>
 
@@ -776,6 +795,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     marginBottom: 50,
+    paddingTop: 10,
   },
   userlist: {
     borderRadius: 10,
@@ -803,5 +823,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
     marginBottom: 20,
+  },
+  subtext: {
+    color: Colors.secondaryText,
+    fontSize: 12,
+    textAlign: "center",
+    marginTop: -10,
   },
 });

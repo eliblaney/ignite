@@ -78,7 +78,7 @@ export default class Register extends Component {
           if (
             name === null ||
             name.split(" ") === null ||
-            name.split(" ").length !== 2 ||
+            name.split(" ").length > 1 ||
             name.split(" ")[0].length < 1 ||
             name.split(" ")[1].length < 1
           ) {

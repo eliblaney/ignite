@@ -68,6 +68,5 @@ const styles = StyleSheet.create({
     color: Colors.modalText,
     padding: 10,
     paddingRight: 20,
-    paddingBottom: 40,
   },
 });

@@ -21,14 +21,20 @@ and through you be happily ended_
 
 **4.** Share a desolation of the week
 
-**5.** Each person gives a word describing “How are you leaving?”
+**5.** How have you found compansionship this week? Have you been able to check in with your prayer partner?
 
-**6.** One member gives a closing prayer, the Prayer for Generosity below is excellent for the whole group to pray together, but any form of prayer will do. 
+**6.** Are your fasts going well? What insights or challenges have you found through your fasting this week?
 
-_Lord Jesus, teach me to be generous; 
-teach me to serve you as you deserve, 
-to give and not to count the cost, 
-to fight and not to heed the wounds, 
-to toil and not to seek for rest, 
-to labor and not to seek reward, 
+**7.** Were you able to find time each day to pray, read the reflections, and meditate with the Examen or your own prayers? What insights have you found? Have you encountered obstacles to prayer? If you've had trouble, how might you try to spend more time with God this week?
+
+**8.** Each person gives a word describing “How are you leaving?”
+
+**9.** One member gives a closing prayer, the Prayer for Generosity below is excellent for the whole group to pray together, but any form of prayer will do.
+
+_Lord Jesus, teach me to be generous;
+teach me to serve you as you deserve,
+to give and not to count the cost,
+to fight and not to heed the wounds,
+to toil and not to seek for rest,
+to labor and not to seek reward,
 except that of knowing that I do your will._

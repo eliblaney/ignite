@@ -1,5 +1,5 @@
 import React from "react";
-import {StyleSheet} from "react-native";
+import {Platform, StyleSheet} from "react-native";
 import {Header as ElementsHeader} from "react-native-elements";
 import Colors from "./Colors";
 
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     justifyContent: "space-around",
     paddingTop: 40,
-    height: 100,
+    height: Platform.OS === "ios" ? 85 : undefined,
   },
   title: {
     fontSize: 24,

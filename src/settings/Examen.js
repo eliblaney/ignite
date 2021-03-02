@@ -32,7 +32,7 @@ export default withNavigation(
     render() {
       return (
         <ScrollView style={{flex: 1}}>
-          <Text style={{margin: 10}}>
+          <Text style={{margin: 10, fontSize: 16}}>
             The Examen is a powerful tool that will help you assess your current
             spiritual wellbeing and prepare you to build yourself up tomorrow.
           </Text>

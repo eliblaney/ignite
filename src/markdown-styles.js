@@ -7,6 +7,7 @@ const styles = {
     marginRight: 10,
     marginLeft: 10,
     color: Colors.text,
+    fontSize: 16,
   },
   blockquote: {
     backgroundColor: Colors.modalBackground,

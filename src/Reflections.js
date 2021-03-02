@@ -457,7 +457,7 @@ export default withNavigation(
             />
             <View style={styles.readerContainer}>
               {sundayComponent}
-              <Text style={{marginBottom: 10}}>{suscipe}</Text>
+              <Text style={{margin: 10, fontSize: 16}}>{suscipe}</Text>
               {reflectionText.map((textSegment, index) => (
                 // Render audio component in place of [audio][/audio] tags
                 // reflectionText is an array split at that index
