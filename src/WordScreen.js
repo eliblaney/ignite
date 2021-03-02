@@ -16,20 +16,34 @@ export default class WordScreen extends React.Component {
     this.maxLength = 14;
     const itemList = [
       "amazed",
+      "annoyed",
+      "anxious",
+      "awesome",
       "bored",
+      "buzzing",
       "crazy",
       "daring",
+      "down",
       "energized",
+      "exhausted",
+      "frightened",
+      "grateful",
+      "hopeful",
       "hyped",
+      "optimistic",
+      "pessimistic",
       "prayerful",
       "ready",
+      "reflective",
       "relaxed",
+      "rushed",
       "satisfied",
+      "scared",
       "sleepy",
       "sore",
-      "theatrical",
       "tired",
       "wonderful",
+      "worried",
     ];
 
     this.items = itemList.map((name, i) => {
@@ -38,7 +52,7 @@ export default class WordScreen extends React.Component {
 
     const {placeholder} = this.props;
 
-    this.placeholder = placeholder || "Energized";
+    this.placeholder = placeholder || "Type anything!";
     this.state = {
       inputText: "",
     };
